@@ -1,0 +1,103 @@
+.search-box {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    width: 715px;
+    height: 122px;
+    justify-content: space-around;
+}
+
+.search-type-box {
+    display: flex;
+    height: 30px;
+    margin-bottom: 16px;
+    margin-left: 18px;
+}
+
+.search-type {
+    font-size: 19px;
+    font-weight: 500;
+    margin-right: 60px;
+    list-style: none;
+    cursor: pointer;
+    transition: all ease .2s;
+    letter-spacing: 1px;
+    text-shadow: none;
+    color: #fff;
+}
+
+.search-input-box {
+    position: relative;
+    overflow: visible;
+    width: 715px;
+    height: 66px;
+}
+
+.search-input {
+    font-size: 20px;
+    font-weight: 500;
+    width: 715px;
+    height: 66px;
+    padding: 11px 20px 11px 74px;
+    color: #999;
+    border: transparent;
+    border-radius: 3px;
+    outline: 0;
+    background-color: #fff;
+    transition: background-color .2s;
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    color: #ccc;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: #ccc;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #ccc;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color: #ccc;
+}
+.search-button {
+    position: absolute;
+    top: 0;
+    right: -2px;
+    display: none;
+    width: 74px;
+    height: 66px;
+    cursor: pointer;
+    transition: all ease .4s;
+    border: none;
+    border-radius: 0 3px 3px 0;
+    outline: 0;
+    background-color: #00ce6d;
+    background-image: url('../imgs/search.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 30px;
+}
+
+.search-choice {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    width: 72px;
+    height: 66px;
+    cursor: pointer;
+    border-radius: 3px 0 0 3px;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-logo {
+    height: 32px;
+    margin-left: 6px;
+}
+
+.search-arrow-down {
+    height: 8px;
+    margin-left: 5px;
+}

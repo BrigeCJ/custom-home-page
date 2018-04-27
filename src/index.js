@@ -1,13 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './index.css'
+import App from './App'
 
-class App extends React.Component {
-  render () {
-    return (
-      <h1 style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>你想偷看？没门！</h1>
-    )
-  }
+import './assets/styles/base.css'
+
+const render = () => {
+  ReactDOM.render(
+    <App />,
+    document.getElementById('root')
+  )
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
+render()

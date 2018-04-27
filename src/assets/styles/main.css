@@ -1,0 +1,114 @@
+.main-box {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-main {
+    display: flex;
+    display: -webkit-box;
+    overflow: hidden;
+    width: 100%;
+    height: auto;
+    transform: translate3d(0,0,0);
+}
+
+.home-main-box {
+    position: relative;
+    display: flex;
+}
+
+.home-icon-box {
+    width: 1200px;
+    margin-right: 50px;
+    margin-left: 50px;
+    transition: all ease .3s;
+    height: 440px;
+    padding-top: 60px;
+}
+
+.home-icon-last {
+    position: absolute;
+    left: -1300px;
+}
+
+.home-icon-first {
+    position: absolute;
+    right: -1300px;
+}
+
+.home-icon {
+    position: relative;
+    float: left;
+    width: calc(100% / 5);
+    height: 150px;
+    margin-top: 0;
+    margin-bottom: 45px;
+    transition: all ease .25s;
+}
+
+.home-icon-img {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    margin-right: auto;
+    margin-left: auto;
+    cursor: pointer;
+    transition: all .2s linear;
+    border-radius: 100%;
+    background-position: center;
+    background-size: 100%;
+    box-shadow: rgba(0,0,0,.3) 2px 2px 20px;
+}
+
+.home-icon-name {
+    font-size: 15px;
+    overflow: hidden;
+    width: 135px;
+    margin-top: 18px;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: rgba(255,255,255,.75);
+}
+
+.home-icon-delete {
+    position: absolute;
+    z-index: 999;
+    top: -8px;
+    right: -8px;
+    display: none;
+    width: 30px;
+    height: 30px;
+    cursor: default;
+    transition: all ease .3s;
+    border-radius: 100%;
+    background-color: rgba(255,255,255,.4);
+    background-image: url('../imgs/remove.png');
+    background-position: center;
+    background-size: 90%;
+    box-shadow: #a2a2a2 0 0 2px;
+}
+
+.home-icon-edit {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    width: 100%;
+    height: 100%;
+    cursor: default;
+    transition: all ease .3s;
+    opacity: 0;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,.6);
+    background-image: url('../imgs/edit-icon.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 45%;
+}
