@@ -3,6 +3,9 @@ import AddSite from './AddSite'
 import Setting from './Setting'
 import '../assets/styles/mainSlideBox.css'
 
+import { toggleMainSlideBox } from '../store/actions'
+import { connect } from 'react-redux'
+
 class MainSlideBox extends Component {
   constructor(props) {
     super(props);
@@ -19,10 +22,11 @@ class MainSlideBox extends Component {
   }
   render () {
     let showIndex = this.state.showIndex;
+    let { closeSlideBox } = this.props;
     return (
       <div className="main-slide-box">
         <div className="slide-title">
-          <div className="slide-close" title="关闭"/>
+          <div className="slide-close" title="关闭" onClick={closeSlideBox}/>
           <ul className="slide-title-box">
             <li className={ showIndex === 0 ? 'slide-menu selected' : 'slide-menu'} onClick={this.changeContent.bind(this, 0)}>添加</li>
             <div className="slide-separate"/>
@@ -46,4 +50,12 @@ class MainSlideBox extends Component {
   }
 }
 
-export default MainSlideBox;
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    closeSlideBox: () => {
+      dispatch(toggleMainSlideBox(false))
+    }
+  }
+};
+
+export default connect(null, mapDispatchToProps)(MainSlideBox);
