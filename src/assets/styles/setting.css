@@ -1,0 +1,228 @@
+.setting-box {
+    transform: translateX(1px);
+}
+
+.setting-item-wrapper {
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 3px;
+    background-color: #fff;
+}
+
+.setting-item-title {
+    font-size: 15px;
+    color: #000;
+}
+
+.setting-toggle {
+    display: flex;
+    margin-top: 15px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.setting-toggle-text {
+    font-size: 13px;
+    max-width: 150px;
+    color: #666;
+}
+
+.setting-text-btn-max-width {
+    line-height: 1.6;
+    max-width: 250px;
+}
+
+.checkbox-toggle {
+    position: relative;
+    width: 40px;
+    height: 26px;
+    cursor: pointer;
+    transition: all ease .3s;
+    border: 2px solid #c2c2c2;
+    border-radius: 14px;
+    outline: 0;
+    -webkit-appearance: none;
+}
+
+.checkbox-toggle:after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    transition: all ease .3s;
+    border-radius: 9px;
+    background-color: #c2c2c2;
+}
+
+.checkbox-toggle:checked {
+    border-color: #00de79;
+}
+
+.checkbox-toggle:checked:after {
+    transform: translateX(14px);
+    background-color: #00de79;
+}
+
+.tips {
+    font-size: 12px;
+    color: #bbb;
+}
+
+.setting-add-reduce-box {
+    display: flex;
+    height: 26px;
+}
+
+.setting-add-reduce-box .setting-reduce-add-common {
+    position: relative;
+    display: flex;
+    width: 32px;
+    height: 100%;
+    cursor: pointer;
+    border: none;
+    outline: 0;
+    align-items: center;
+    justify-content: center;
+}
+.setting-add-reduce-box .setting-reduce-btn {
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    background-color: #eaeaea;
+}
+
+.setting-add-reduce-box .setting-reduce-btn:before {
+    position: absolute;
+    left: 50%;
+    display: inline-block;
+    width: 13px;
+    height: 2px;
+    content: '';
+    transform: translate(-50%,-50%);
+    background: #fff;
+}
+
+.setting-reduce-add-number {
+    display: flex;
+    width: 52px;
+    height: 100%;
+    color: #666;
+    border-top: 1px solid #eaeaea;
+    border-bottom: 1px solid #eaeaea;
+    background: #fff;
+    align-items: center;
+    justify-content: center;
+}
+
+.setting-add-reduce-box .setting-add-btn {
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    background: #00ce6d;
+}
+
+.setting-add-reduce-box .setting-add-btn:before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: inline-block;
+    width: 13px;
+    height: 2px;
+    content: '';
+    transform: translate(-50%,-50%);
+    background: #fff;
+}
+
+.setting-add-reduce-box .setting-add-btn:after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: inline-block;
+    width: 2px;
+    height: 13px;
+    content: '';
+    transform: translate(-50%,-50%);
+    background: #fff;
+}
+
+.setting-range-progress {
+    margin-right: 20px;
+    position: relative;
+    display: inline-block;
+    float: right;
+    width: 160px;
+    height: 18px;
+}
+
+.setting-range {
+    position: absolute;
+    z-index: 104;
+    top: 5px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    outline: 0;
+    background: 0 0;
+    -webkit-appearance: none;
+}
+
+.setting-range:after {
+    font-size: 12px;
+    line-height: 8px;
+    position: absolute;
+    right: -38px;
+    display: inline-block;
+    width: 30px;
+    content: attr(data-progress);
+    color: #00ce6d;
+}
+
+.setting-progress {
+    position: absolute;
+    z-index: 103;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    transform: translateY(-50%);
+    border: none;
+    outline: 0;
+    -webkit-appearance: none;
+}
+
+.reset-btn {
+    font-size: 12px;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    display: flex;
+    width: auto;
+    height: 28px;
+    padding: 0 22px;
+    transition: all ease .2s;
+    color: #fff;
+    border-radius: 5px;
+    background-color: #8ac697;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-more {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.no-more .line {
+    height: 2px;
+    width: 150px;
+    background-color: #ddd;
+}
+

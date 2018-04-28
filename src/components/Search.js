@@ -14,16 +14,25 @@ class Search extends Component {
         { title: '新闻', type: 2},
         { title: '视频', type: 3},
         { title: '地图', type: 4},
-      ]
+      ],
+      showIndex: 0
+    }
+  }
+  changeSearchType (index) {
+    if (index !== this.state.showIndex) {
+      this.setState({
+        showIndex: index
+      })
     }
   }
   render () {
     let searchTypes = this.state.searchTypes;
+    let showIndex = this.state.showIndex;
     return (
       <div className="search-box">
         <ul className="search-type-box">
           {
-            searchTypes.map((item, index) => <li className="search-type" key={index}>{item.title}</li>)
+            searchTypes.map((item, index) => <li className={showIndex === index ? 'search-type selected' : 'search-type'} key={index} onClick={this.changeSearchType.bind(this, index)}>{item.title}</li>)
           }
         </ul>
         <div className="search-input-box">
