@@ -8,7 +8,7 @@ import bg from './assets/imgs/bg2.jpg'
 import windmill from './assets/imgs/windmill.png'
 
 import { connect } from 'react-redux'
-import { toggleMainSlideBox } from "./store/actions";
+import { toggleMainSlideBox } from "./store/actions"
 
 class App extends Component {
   constructor(props) {
