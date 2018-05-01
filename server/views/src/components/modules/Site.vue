@@ -85,7 +85,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="pagination.total">
       </el-pagination>
-      <el-dialog title="新增网站" :visible.sync="dialogAddSiteVisible" @close="handleResetForm">
+      <el-dialog :title="form.caption" :visible.sync="dialogAddSiteVisible" @close="handleResetForm">
         <el-form :model="form" size="small" :rules="rules" ref="form">
           <el-form-item label="网站名称" :label-width="formLabelWidth" prop="title">
             <el-input v-model="form.title" auto-complete="off"></el-input>
@@ -101,6 +101,7 @@
               :before-remove="handleRemoveIcon"
               name="icon"
               :limit="1"
+              :file-list="fileList"
               ref="upload"
               :multiple="false"
               list-type="picture"
@@ -152,7 +153,10 @@ export default {
       loading: false,
       dialogAddSiteVisible: false,
       formLabelWidth: '100px',
+      fileList: [],
       form: {
+        _id: -1,
+        caption: '新增网站',
         title: '',
         icon: '',
         url: '',
@@ -174,7 +178,8 @@ export default {
         total: 0
       },
       data: {
-        row: []
+        row: [],
+        total: 0
       }
     }
   },
@@ -206,6 +211,7 @@ export default {
       let data = result.data
       if (status === 200 && message === 'ok') {
         this.data = data
+        this.pagination.total = data.total
       } else {
         this.$message({
           type: 'error',
@@ -214,6 +220,8 @@ export default {
       }
     },
     handleAddSite () {
+      this.form.caption = '新增网站'
+      this.form._id = -1
       this.dialogAddSiteVisible = true
     },
     handleResetForm () {
@@ -231,9 +239,11 @@ export default {
       this.form.icon = ''
     },
     confirmAddSite () {
+      console.log(this.form)
       this.$refs['form'].validate((valid) => {
         if (!valid) return false
         let formData = new FormData()
+        formData.append('_id', this.form._id)
         formData.append('title', this.form.title)
         formData.append('url', this.form.url)
         formData.append('type', this.form.type)
@@ -277,7 +287,16 @@ export default {
       }
     },
     handleEdit (index, row) {
-      // pass
+      this.form._id = row._id
+      this.form.caption = '编辑网站信息'
+      this.form.title = row.title
+      this.form.type = row.type
+      this.form.url = row.url
+      this.form.keyword = row.keyword
+      this.form.description = row.description
+      this.fileList = [{name: row.imagename, url: row.src}]
+      console.log(this.fileList)
+      this.dialogAddSiteVisible = true
     },
     handleDelete (index, row) {
       this.$confirm('你确定删除这条记录吗?', '警告', {
@@ -297,10 +316,12 @@ export default {
       this.initData()
     },
     handleSizeChange (size) {
-
+      this.pagination.size = size
+      this.initData()
     },
     handlePageChange (page) {
-
+      this.pagination.page = page
+      this.initData()
     },
     init () {
       this.CURRENT_SIDEBAR_NAV_INDEX(0)
@@ -351,7 +372,7 @@ export default {
     justify-content: center;
     height: 50px;
   }
-  .el-dialog__body {
+  .site .el-dialog__body {
     padding-top: 15px;
     padding-bottom: 0;
   }

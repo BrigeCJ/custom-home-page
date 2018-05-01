@@ -9,13 +9,12 @@ function controller(db) {
     let skip = (page - 1) * size;
     let limit = parseInt(size);
     let conditions = {}
-    if (!keyword) {
+    if (keyword) {
       conditions = {
         keyword: {$regex: new RegExp(keyword)}
       }
     }
-    console.log(keyword, conditions)
-    sites.find(conditions).skip(skip).limit(limit).sort({time: -1}).toArray(function (err, result) {
+    sites.find(conditions).skip(skip).limit(limit).sort({time: -1}).toArray((err, result) => {
       if (err) {
         res.json({
           message: '数据查询出错!',
@@ -24,12 +23,23 @@ function controller(db) {
         });
         throw err;
       }
-      res.json({
-        message: 'ok',
-        status: 200,
-        data: {
-          row: result
+      sites.find(conditions).toArray((err, rs) => { // 计算总条数
+        if (err) {
+          res.json({
+            message: '数据查询出错!',
+            status: 500,
+            data: {}
+          });
+          throw err;
         }
+        res.json({
+          message: 'ok',
+          status: 200,
+          data: {
+            row: result,
+            total: rs.length
+          }
+        });
       });
     })
   };
