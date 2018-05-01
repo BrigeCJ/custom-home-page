@@ -2,10 +2,11 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-import iView from 'iview';
-import 'iview/dist/styles/iview.css';
+import ElementUI from 'element-ui'
+import './service'
+import 'element-ui/lib/theme-chalk/index.css'
 
-Vue.use(iView);
+Vue.use(ElementUI)
 
 /* eslint-disable no-new */
 new Vue({

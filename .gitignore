@@ -3,12 +3,14 @@
 # dependencies
 /node_modules
 /server/views/node_modules
+/server/public/uploads
 
 # testing
 /coverage
 
 # production
 /build
+/server/views/dist
 
 # misc
 .DS_Store

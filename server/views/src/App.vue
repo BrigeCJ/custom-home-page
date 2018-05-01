@@ -32,5 +32,6 @@ export default {
   }
   a {
     text-decoration: none;
+    color: #6495ED;
   }
 </style>

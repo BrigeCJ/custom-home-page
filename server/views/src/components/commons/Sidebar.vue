@@ -4,7 +4,7 @@
       <ul class="sidebar-menu">
         <li class="sidebar-menu__item" v-for="(item, index) in menus" :key="index" :class="{active: index === sidebarNavIndex}">
           <router-link :to="item.link" class="item-group">
-            <Icon :type="item.icon" class="item-group__icon"></Icon>
+            <i :class="item.icon" class="item-group__icon"></i>
             <span class="item-group__name">{{item.title}}</span>
           </router-link>
         </li>
@@ -28,17 +28,17 @@ export default {
         {
           title: '网站管理',
           link: '/site',
-          icon: 'link'
+          icon: 'fa fa-link'
         },
         {
           title: '搜索引擎',
           link: '/searchEngine',
-          icon: 'search'
+          icon: 'fa fa-search'
         },
         {
           title: '壁纸管理',
           link: '/wallpaper',
-          icon: 'paper-airplane'
+          icon: 'fa fa-paper-plane-o'
         }
       ]
     }
