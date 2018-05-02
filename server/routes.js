@@ -5,9 +5,9 @@ const crypto = require('crypto');
 module.exports = (app, db) => {
 
   let controller = new Controller(db);
-  let uploadStorage = multer.diskStorage({
+  let siteStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, 'public/uploads/')
+      cb(null, 'public/uploads/sites/')
     },
     filename: function (req, file, cb) {
       let index = file.originalname.lastIndexOf('.');
@@ -16,11 +16,24 @@ module.exports = (app, db) => {
         if( err ) throw err;
         cb(null, raw.toString('hex') + subfix)
       })
-
+    }
+  });
+  let searchEnginesStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'public/uploads/searchEngines/')
+    },
+    filename: function (req, file, cb) {
+      let index = file.originalname.lastIndexOf('.');
+      let subfix = file.originalname.substr(index);
+      crypto.pseudoRandomBytes(16, function (err, raw) {
+        if( err ) throw err;
+        cb(null, raw.toString('hex') + subfix)
+      })
     }
   });
 
-  let upload = multer({storage: uploadStorage});
+  let uploadSitesIcon = multer({storage: siteStorage});
+  let uploadSearchEnginesLogo = multer({storage: searchEnginesStorage})
 
   // 页面返回
   app.get('/', (req, res) => {
@@ -31,5 +44,11 @@ module.exports = (app, db) => {
   app.get('/api/sites/get', controller.getSites);
 
   // 新增网站
-  app.post('/api/sites/add', upload.single('icon'), controller.addSites);
+  app.post('/api/sites/add', uploadSitesIcon.single('icon'), controller.addSites);
+
+  // 获取搜索引擎的列表
+  app.get('/api/searchEngines/get', controller.getSearchEngines);
+
+  // 添加搜索引擎
+  app.post('/api/searchEngines/add', uploadSearchEnginesLogo.single('logo'), controller.addSearchEngines)
 };

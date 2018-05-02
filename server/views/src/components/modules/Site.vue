@@ -6,13 +6,16 @@
           <el-button type="primary" size="mini" @click="handleAddSite">新增</el-button>
         </div>
         <div class="toolbar-right">
-          <el-input
-            placeholder="搜索..."
-            prefix-icon="el-icon-search"
-            size="small"
-            v-model="keyword"
-            @change="handleSearch">
-          </el-input>
+          <div class="search-input">
+            <el-input
+              placeholder="搜索..."
+              prefix-icon="el-icon-search"
+              size="small"
+              v-model="keyword"
+              @change="handleSearch">
+            </el-input>
+          </div>
+          <el-button type="default" size="small" @click="initData"><i class="fa fa-refresh" title="刷新"></i></el-button>
         </div>
       </div>
       <div class="site-table">
@@ -136,8 +139,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="closeAddSiteDialog" size="mini">取 消</el-button>
-          <el-button type="primary" @click="confirmAddSite" size="mini">确 定</el-button>
+          <el-button @click="closeAddSiteDialog" size="small">取 消</el-button>
+          <el-button type="primary" @click="confirmAddSite" size="small">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -166,10 +169,10 @@ export default {
         source: 'checkson'
       },
       rules: {
-        title: [{ required: true, message: '请输入网站名称', trigger: 'blur' }],
-        url: [{ required: true, message: '请输入网站地址', trigger: 'blur' }],
-        icon: [{ required: true, message: '请选择网站图标', trigger: 'blur' }],
-        type: [{ required: true, message: '请选择网站分类', trigger: 'blur' }]
+        title: [{ required: true, message: '请输入网站的名称', trigger: 'blur' }],
+        url: [{ required: true, message: '请输入网站的地址', trigger: 'blur' }],
+        icon: [{ required: true, message: '请选择网站的图标', trigger: 'blur' }],
+        type: [{ required: true, message: '请选择网站的分类', trigger: 'blur' }]
       },
       keyword: '',
       pagination: {
@@ -239,11 +242,10 @@ export default {
       this.form.icon = ''
     },
     confirmAddSite () {
-      console.log(this.form)
       this.$refs['form'].validate((valid) => {
         if (!valid) return false
         let formData = new FormData()
-        formData.append('_id', this.form._id)
+        // formData.append('_id', this.form._id)
         formData.append('title', this.form.title)
         formData.append('url', this.form.url)
         formData.append('type', this.form.type)
@@ -271,7 +273,6 @@ export default {
       let result = res.data
       let status = result.status
       let message = result.message
-      // let data = result.data
       if (status === 200 && message === 'ok') {
         this.$message({
           type: 'success',
@@ -287,16 +288,16 @@ export default {
       }
     },
     handleEdit (index, row) {
-      this.form._id = row._id
-      this.form.caption = '编辑网站信息'
-      this.form.title = row.title
-      this.form.type = row.type
-      this.form.url = row.url
-      this.form.keyword = row.keyword
-      this.form.description = row.description
-      this.fileList = [{name: row.imagename, url: row.src}]
-      console.log(this.fileList)
-      this.dialogAddSiteVisible = true
+      // this.form._id = row._id
+      // this.form.caption = '编辑网站信息'
+      // this.form.title = row.title
+      // this.form.type = row.type
+      // this.form.url = row.url
+      // this.form.keyword = row.keyword
+      // this.form.description = row.description
+      // this.fileList = [{name: row.imagename, url: row.src}]
+      // console.log(this.fileList)
+      // this.dialogAddSiteVisible = true
     },
     handleDelete (index, row) {
       this.$confirm('你确定删除这条记录吗?', '警告', {
@@ -359,9 +360,11 @@ export default {
     float: left;
   }
   .site-toolbar .toolbar-right {
-    display: inline-block;
     float: right;
+  }
+  .site-toolbar .toolbar-right .search-input {
     width: 200px;
+    display: inline-block;
   }
   .site-table {
     height: calc(100% - 92px);
@@ -371,6 +374,9 @@ export default {
     align-items: center;
     justify-content: center;
     height: 50px;
+  }
+  .site .el-table .cell {
+    white-space: nowrap;
   }
   .site .el-dialog__body {
     padding-top: 15px;

@@ -37,7 +37,7 @@ export default {
         },
         {
           title: '壁纸管理',
-          link: '/wallpaper',
+          link: '/wallpapers',
           icon: 'fa fa-paper-plane-o'
         }
       ]

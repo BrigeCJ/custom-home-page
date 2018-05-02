@@ -29,7 +29,7 @@ export default new Router({
           component: SearchEngine
         },
         {
-          path: '/wallpaper',
+          path: '/wallpapers',
           name: 'Wallpaper',
           component: Wallpaper
         }

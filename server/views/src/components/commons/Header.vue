@@ -19,7 +19,9 @@
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>关于作者</el-dropdown-item>
-            <el-dropdown-item>项目仓库</el-dropdown-item>
+            <a href="https://github.com/checkson/custom-home-page" target="_blank">
+              <el-dropdown-item>项目仓库</el-dropdown-item>
+            </a>
             <el-dropdown-item divided>退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
