@@ -3,6 +3,7 @@ function controller(db) {
   let database = db.db('checkson');
   let sites = database.collection('sites');
   let searchEngines = database.collection('searchengines');
+  let wallpapers = database.collection('wallpapers')
 
   // 获取网站列表信息
   this.getSites = (req, res) => {
@@ -98,31 +99,10 @@ function controller(db) {
     let body = req.body;
     let data = {
       title: body.title,
-      description: body.description
+      description: body.description,
+      types: JSON.parse(body.types)
     };
     data.logo = '/uploads/searchEngines/' + file.filename;
-    data.types = [
-      {
-        name: '网页',
-        url: body.pageUrl
-      },
-      {
-        name: '图片',
-        url: body.photoUrl
-      },
-      {
-        name: '新闻',
-        url: body.newsUrl
-      },
-      {
-        name: '视频',
-        url: body.videoUrl
-      },
-      {
-        name: '地图',
-        url: body.mapUrl
-      }
-    ];
     data.time = (new Date()).getTime();
     searchEngines.insertOne(data, function(err, result) {
       if (err) {
@@ -139,6 +119,59 @@ function controller(db) {
         data: result
       });
     });
+  }
+
+  // 获取壁纸
+  this.getWallpapers = (req, res) => {
+    let {page, size} = req.query;
+    let skip = (page - 1) * size;
+    let limit = parseInt(size);
+    wallpapers.find().skip(skip).limit(limit).sort({time: -1}).toArray((err, result) => {
+      if (err) {
+        res.json({
+          message: '数据查询出错!',
+          status: 500,
+          data: {}
+        });
+        throw err;
+      }
+      res.json({
+        message: 'ok',
+        status: 200,
+        data: {
+          row: result
+        }
+      });
+    })
+  }
+
+  // 添加壁纸
+  this.addWallpapers = (req, res) => {
+    let files = req.files;
+    let dataList = [];
+    for(let i = 0, len = files.length; i < len; i++) {
+      let obj = {
+        name: files[i].originalname,
+        src: '/uploads/wallpapers/' + files[i].filename,
+        time: (new Date()).getTime()
+      }
+      dataList.push(obj)
+    }
+    wallpapers.insertMany(dataList, function (err, result) {
+      if (err) {
+        res.json({
+          message: '数据插入出错!',
+          status: 500,
+          data: {}
+        });
+        throw err;
+      }
+      res.json({
+        message: 'ok',
+        status: 200,
+        data: result
+      });
+    })
   }
 }
 

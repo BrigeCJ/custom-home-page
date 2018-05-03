@@ -98,7 +98,6 @@
           </el-form-item>
           <el-form-item label="网站图标" :label-width="formLabelWidth" prop="icon">
             <el-upload
-              class="upload-demo"
               action="https://jsonplaceholder.typicode.com/posts/"
               :on-change="handleChangeIcon"
               :before-remove="handleRemoveIcon"
@@ -233,7 +232,6 @@ export default {
     },
     closeAddSiteDialog () {
       this.dialogAddSiteVisible = false
-      this.handleResetForm()
     },
     handleChangeIcon (file, fileList) {
       this.form.icon = file.raw

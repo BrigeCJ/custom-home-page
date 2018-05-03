@@ -5,6 +5,7 @@ const crypto = require('crypto');
 module.exports = (app, db) => {
 
   let controller = new Controller(db);
+
   let siteStorage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, 'public/uploads/sites/')
@@ -18,6 +19,7 @@ module.exports = (app, db) => {
       })
     }
   });
+
   let searchEnginesStorage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, 'public/uploads/searchEngines/')
@@ -32,8 +34,23 @@ module.exports = (app, db) => {
     }
   });
 
+  let wallpapersStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'public/uploads/wallpapers/')
+    },
+    filename: function (req, file, cb) {
+      let index = file.originalname.lastIndexOf('.');
+      let subfix = file.originalname.substr(index);
+      crypto.pseudoRandomBytes(16, function (err, raw) {
+        if( err ) throw err;
+        cb(null, raw.toString('hex') + subfix)
+      })
+    }
+  });
+
   let uploadSitesIcon = multer({storage: siteStorage});
-  let uploadSearchEnginesLogo = multer({storage: searchEnginesStorage})
+  let uploadSearchEnginesLogo = multer({storage: searchEnginesStorage});
+  let uploadWallpaer = multer({storage: wallpapersStorage});
 
   // 页面返回
   app.get('/', (req, res) => {
@@ -51,4 +68,10 @@ module.exports = (app, db) => {
 
   // 添加搜索引擎
   app.post('/api/searchEngines/add', uploadSearchEnginesLogo.single('logo'), controller.addSearchEngines)
+
+  // 获取壁纸列表
+  app.get('/api/wallpapers/get', controller.getWallpapers)
+
+  // 添加壁纸
+  app.post('/api/wallpapers/add', uploadWallpaer.array('wallpapers'), controller.addWallpapers)
 };

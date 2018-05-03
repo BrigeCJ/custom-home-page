@@ -28,7 +28,6 @@
         </el-form-item>
         <el-form-item label="商标" :label-width="formLabelWidth" prop="logo">
           <el-upload
-            class="upload-demo"
             action="https://jsonplaceholder.typicode.com/posts/"
             :on-change="handleChangeLogo"
             :before-remove="handleRemoveLogo"
@@ -42,23 +41,40 @@
             <el-button size="small" type="primary">选择图片</el-button>
           </el-upload>
         </el-form-item>
-        <el-form-item label="网页url" :label-width="formLabelWidth" prop="pageUrl">
-          <el-input v-model="form.pageUrl" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="图片url" :label-width="formLabelWidth" prop="photoUrl">
-          <el-input v-model="form.photoUrl" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="新闻url" :label-width="formLabelWidth" prop="newsUrl">
-          <el-input v-model="form.newsUrl" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="视频url" :label-width="formLabelWidth" prop="videoUrl">
-          <el-input v-model="form.videoUrl" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="地图url" :label-width="formLabelWidth" prop="mapUrl">
-          <el-input v-model="form.mapUrl" auto-complete="off"></el-input>
-        </el-form-item>
         <el-form-item label="描述" :label-width="formLabelWidth" prop="description">
           <el-input type="textarea" v-model="form.description" auto-complete="off" rows="4"></el-input>
+        </el-form-item>
+        <el-form-item label="分类" :label-width="formLabelWidth">
+          <el-button type="default" mini="mini" style="margin-bottom: 5px; color: cornflowerblue" @click="handleAddClassify">新增分类</el-button>
+          <el-table
+            :data="form.types"
+            size="mini"
+            border
+            style="width: 100%">
+            <el-table-column
+              prop="name"
+              label="名称"
+              width="120">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.name" auto-complete="off"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="url"
+              label="url">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.url" auto-complete="off"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="90">
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  type="danger"
+                  @click="handleDeleteClassify(scope.$index, scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -83,21 +99,12 @@ export default {
         caption: '新增搜索引擎',
         title: '',
         logo: '',
-        pageUrl: '',
-        photoUrl: '',
-        newsUrl: '',
-        videoUrl: '',
-        mapUrl: '',
+        types: [],
         description: ''
       },
       rules: {
         title: [{ required: true, message: '请输入搜索引擎的名称', trigger: 'blur' }],
         logo: [{ required: true, message: '请选择搜索引擎的商标', trigger: 'blur' }],
-        pageUrl: [{ required: true, message: '请选择搜索引擎的网页url', trigger: 'blur' }],
-        photoUrl: [{ required: true, message: '请选择搜索引擎的图片url', trigger: 'blur' }],
-        newsUrl: [{ required: true, message: '请选择搜索引擎的新闻url', trigger: 'blur' }],
-        videoUrl: [{ required: true, message: '请选择搜索引擎的视频url', trigger: 'blur' }],
-        mapUrl: [{ required: true, message: '请选择搜索引擎的地图url', trigger: 'blur' }],
         description: [{ required: true, message: '请输入搜索引擎的描述', trigger: 'blur' }]
       },
       data: {
@@ -146,10 +153,10 @@ export default {
     handleResetForm () {
       this.$refs['form'].resetFields()
       this.$refs['upload'].clearFiles()
+      this.form.types = []
     },
     closeAddSearchEnginesDialog () {
       this.dialogAddSearchEnginesVisible = false
-      this.handleResetForm()
     },
     handleChangeLogo (file, fileList) {
       this.form.logo = file.raw
@@ -162,11 +169,7 @@ export default {
         if (!valid) return false
         let formData = new FormData()
         formData.append('title', this.form.title)
-        formData.append('pageUrl', this.form.pageUrl)
-        formData.append('photoUrl', this.form.photoUrl)
-        formData.append('newsUrl', this.form.newsUrl)
-        formData.append('videoUrl', this.form.videoUrl)
-        formData.append('mapUrl', this.form.mapUrl)
+        formData.append('types', JSON.stringify(this.form.types))
         formData.append('description', this.form.description)
         formData.append('logo', this.form.logo)
         let config = {
@@ -220,6 +223,15 @@ export default {
         // pass
       })
     },
+    handleAddClassify () {
+      this.form.types.push({
+        name: '',
+        url: ''
+      })
+    },
+    handleDeleteClassify (index, row) {
+      this.form.types.splice(index, 1)
+    },
     init () {
       this.CURRENT_SIDEBAR_NAV_INDEX(1)
       this.initData()
@@ -239,6 +251,7 @@ export default {
     padding: 10px;
   }
   .search-engines-inner {
+    position: relative;
     height: 100%;
     width: 100%;
     overflow: auto;
@@ -253,7 +266,7 @@ export default {
     background-color: rgba(0,0,0,.2);
   }
   .search-engines-card {
-    display: inline-block;
+    float: left;
     width: calc(100% / 4);
     padding: 10px;
   }
@@ -302,6 +315,7 @@ export default {
   .card-body .card-description {
     font-size: 13px;
     line-height: 1.5;
+    height: 36px;
     display: -webkit-box;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -314,7 +328,7 @@ export default {
     position: relative;
     padding: 56px 0;
     cursor: pointer;
-    margin-bottom: 15%
+    margin: 20% 0;
   }
   .add-search-engines:hover>.add-search-engines__icon {
     background-color: #d5d5d5;
