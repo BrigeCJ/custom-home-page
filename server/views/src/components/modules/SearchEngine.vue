@@ -3,12 +3,12 @@
     <div class="search-engines-inner" v-loading="loading" element-loading-text="拼命加载中">
       <div class="search-engines-card" v-for="(item, index) in data.row" :key="index">
         <div class="card-inner">
-          <div class="card-delete" @click="handleDelete"><i class="fa fa-trash-o" title="删除"></i></div>
+          <div class="card-delete" @click="handleDelete(item._id)"><i class="fa fa-trash-o" title="删除"></i></div>
           <img :src="item.logo" alt="logo" class="card-image">
           <div class="card-body">
             <div class="card-title">
               <span>{{item.title}}</span>
-              <el-button type="text" style="float: right; padding: 0;" @click="handleEdit">编辑</el-button>
+              <el-button type="text" style="float: right; padding: 0;" @click="handleEdit(item)">编辑</el-button>
             </div>
             <div class="card-description">{{item.description}}</div>
           </div>
@@ -33,7 +33,7 @@
             :before-remove="handleRemoveLogo"
             name="logo"
             :limit="1"
-            :file-list="fileList"
+            :file-list="form.fileList"
             ref="upload"
             :multiple="false"
             list-type="picture"
@@ -94,13 +94,14 @@ export default {
       loading: false,
       dialogAddSearchEnginesVisible: false,
       formLabelWidth: '90px',
-      fileList: [],
       form: {
         caption: '新增搜索引擎',
+        _id: -1,
         title: '',
         logo: '',
         types: [],
-        description: ''
+        description: '',
+        fileList: []
       },
       rules: {
         title: [{ required: true, message: '请输入搜索引擎的名称', trigger: 'blur' }],
@@ -148,12 +149,17 @@ export default {
     },
     handleAddSearchEngines () {
       this.form.caption = '新增搜索引擎'
+      this.form._id = -1
+      this.form.title = ''
+      this.form.types = []
+      this.form.description = ''
+      this.form.logo = ''
+      this.form.fileList = []
       this.dialogAddSearchEnginesVisible = true
     },
     handleResetForm () {
       this.$refs['form'].resetFields()
       this.$refs['upload'].clearFiles()
-      this.form.types = []
     },
     closeAddSearchEnginesDialog () {
       this.dialogAddSearchEnginesVisible = false
@@ -168,10 +174,17 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (!valid) return false
         let formData = new FormData()
+        formData.append('_id', this.form._id)
         formData.append('title', this.form.title)
         formData.append('types', JSON.stringify(this.form.types))
         formData.append('description', this.form.description)
-        formData.append('logo', this.form.logo)
+        if (this.form._id === -1) { // 新增
+          formData.append('logo', this.form.logo)
+        } else { // 编辑
+          if (this.form.logo !== 'editing') {
+            formData.append('logo', this.form.logo)
+          }
+        }
         let config = {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -195,7 +208,7 @@ export default {
       if (status === 200 && message === 'ok') {
         this.$message({
           type: 'success',
-          message: '新增搜索成功!'
+          message: '保存搜索引擎信息成功!'
         })
         this.closeAddSearchEnginesDialog()
         this.initData()
@@ -206,18 +219,45 @@ export default {
         })
       }
     },
-    handleEdit () {
-      alert('你点击了编辑！')
+    handleEdit (item) {
+      this.form.caption = '编辑搜索引擎信息'
+      this.form._id = item._id
+      this.form.title = item.title
+      this.form.types = item.types
+      this.form.description = item.description
+      this.form.logo = 'editing'
+      this.form.fileList = [{name: '', url: item.logo}]
+      this.dialogAddSearchEnginesVisible = true
     },
-    handleDelete () {
+    handleDelete (_id) {
       this.$confirm('你确定删除此搜索引擎吗?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'error',
-          message: '权限不足!'
+        let url = '/api/searchEngines/delete/' + _id
+        this.$http.get(url).then((res) => {
+          let result = res.data
+          let status = result.status
+          let message = result.message
+          if (status === 200 && message === 'ok') {
+            this.$message({
+              type: 'success',
+              message: '删除搜索引擎成功!'
+            })
+            this.initData()
+          } else {
+            this.$message({
+              type: 'error',
+              message: message
+            })
+          }
+        }).catch((err) => {
+          this.$message({
+            type: 'error',
+            message: '网络出错或服务器出错！'
+          })
+          console.error(err)
         })
       }).catch(() => {
         // pass
@@ -255,6 +295,9 @@ export default {
     height: 100%;
     width: 100%;
     overflow: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
   .search-engines-inner::-webkit-scrollbar {
     width: 6px;

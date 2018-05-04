@@ -5,7 +5,7 @@
       <el-button type="text" style="float: right" @click="handleAdd">添加</el-button>
     </div>
     <div class="wallpapers-inner">
-      <div class="container" @scroll="handleScroll" ref="container">
+      <div class="container" @scroll="handleScroll" ref="container" v-loading="loading" element-loading-text="拼命加载中">
         <waterfall
           :align="align"
           :line-gap="200"
@@ -74,10 +74,11 @@ export default {
   },
   data () {
     return {
+      loading: false,
       dialogAddWallpapersVisible: false,
       imgPreviewDialogVisible: false,
       pagination: {
-        size: 50,
+        size: 30,
         page: 1
       },
       fileList: [],
@@ -98,10 +99,28 @@ export default {
       this.isBusy = false
     },
     initData () {
+      this.loading = true
+      this.pagination.page = 1
+      this.noMore = false
       let { page, size } = this.pagination
       let url = '/api/wallpapers/get' + '?page=' + page + '&size=' + size
       this.$http.get(url).then((res) => {
-        this.handleResponse(res)
+        this.handleResponse(res, true)
+        this.loading = false
+      }).catch((err) => {
+        this.$message({
+          type: 'error',
+          message: '网络出错或服务器出错！'
+        })
+        this.loading = false
+        console.log(err)
+      })
+    },
+    getData () {
+      let { page, size } = this.pagination
+      let url = '/api/wallpapers/get' + '?page=' + page + '&size=' + size
+      this.$http.get(url).then((res) => {
+        this.handleResponse(res, false)
       }).catch((err) => {
         this.$message({
           type: 'error',
@@ -110,7 +129,7 @@ export default {
         console.log(err)
       })
     },
-    handleResponse (res) {
+    handleResponse (res, flag) { // flag 判断是否重新加载数据
       let result = res.data
       let status = result.status
       let message = result.message
@@ -120,7 +139,11 @@ export default {
           this.noMore = true
           return
         }
-        this.dataList.push.apply(this.dataList, this.generateRandomItems(data.row))
+        if (flag) {
+          this.dataList = this.generateRandomItems(data.row)
+        } else {
+          this.dataList.push.apply(this.dataList, this.generateRandomItems(data.row))
+        }
       } else {
         this.$message({
           type: 'error',
@@ -241,7 +264,7 @@ export default {
           if (!this.isBusy && !this.noMore) {
             this.isBusy = true
             this.pagination.page += 1
-            this.initData()
+            this.getData()
           }
         }
       })(), 50)

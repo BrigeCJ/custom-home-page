@@ -63,11 +63,17 @@ module.exports = (app, db) => {
   // 新增网站
   app.post('/api/sites/add', uploadSitesIcon.single('icon'), controller.addSites);
 
+  // 删除网站
+  app.get('/api/sites/delete/:id', controller.deleteSites)
+
   // 获取搜索引擎的列表
   app.get('/api/searchEngines/get', controller.getSearchEngines);
 
   // 添加搜索引擎
   app.post('/api/searchEngines/add', uploadSearchEnginesLogo.single('logo'), controller.addSearchEngines)
+
+  // 删除搜索引擎
+  app.get('/api/searchEngines/delete/:id', controller.deleteSearchEngines)
 
   // 获取壁纸列表
   app.get('/api/wallpapers/get', controller.getWallpapers)

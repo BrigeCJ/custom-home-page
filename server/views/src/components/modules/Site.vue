@@ -103,7 +103,7 @@
               :before-remove="handleRemoveIcon"
               name="icon"
               :limit="1"
-              :file-list="fileList"
+              :file-list="form.fileList"
               ref="upload"
               :multiple="false"
               list-type="picture"
@@ -155,17 +155,17 @@ export default {
       loading: false,
       dialogAddSiteVisible: false,
       formLabelWidth: '100px',
-      fileList: [],
       form: {
-        _id: -1,
         caption: '新增网站',
+        _id: -1,
         title: '',
         icon: '',
         url: '',
-        type: '',
+        type: [],
         keyword: '',
         description: '',
-        source: 'checkson'
+        source: 'checkson',
+        fileList: []
       },
       rules: {
         title: [{ required: true, message: '请输入网站的名称', trigger: 'blur' }],
@@ -224,6 +224,14 @@ export default {
     handleAddSite () {
       this.form.caption = '新增网站'
       this.form._id = -1
+      this.form.title = ''
+      this.form.type = []
+      this.form.url = ''
+      this.form.keyword = ''
+      this.form.description = ''
+      this.form.source = 'checkson'
+      this.form.icon = ''
+      this.form.fileList = []
       this.dialogAddSiteVisible = true
     },
     handleResetForm () {
@@ -243,14 +251,21 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (!valid) return false
         let formData = new FormData()
-        // formData.append('_id', this.form._id)
+        formData.append('_id', this.form._id)
         formData.append('title', this.form.title)
         formData.append('url', this.form.url)
         formData.append('type', this.form.type)
         formData.append('keyword', this.form.keyword)
         formData.append('description', this.form.description)
         formData.append('source', this.form.source)
-        formData.append('icon', this.form.icon)
+
+        if (this.form._id === -1) { // 新增
+          formData.append('icon', this.form.icon)
+        } else { // 编辑
+          if (this.form.icon !== 'editing') {
+            formData.append('icon', this.form.icon)
+          }
+        }
         let config = {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -274,7 +289,7 @@ export default {
       if (status === 200 && message === 'ok') {
         this.$message({
           type: 'success',
-          message: '新增网站成功!'
+          message: '保存网站成功!'
         })
         this.closeAddSiteDialog()
         this.initData()
@@ -286,16 +301,17 @@ export default {
       }
     },
     handleEdit (index, row) {
-      // this.form._id = row._id
-      // this.form.caption = '编辑网站信息'
-      // this.form.title = row.title
-      // this.form.type = row.type
-      // this.form.url = row.url
-      // this.form.keyword = row.keyword
-      // this.form.description = row.description
-      // this.fileList = [{name: row.imagename, url: row.src}]
-      // console.log(this.fileList)
-      // this.dialogAddSiteVisible = true
+      this.form.caption = '编辑网站信息'
+      this.form._id = row._id
+      this.form.title = row.title
+      this.form.type = row.type
+      this.form.url = row.url
+      this.form.keyword = row.keyword
+      this.form.description = row.description
+      this.form.source = row.source
+      this.form.icon = 'editing'
+      this.form.fileList = [{name: row.imagename, url: row.src}]
+      this.dialogAddSiteVisible = true
     },
     handleDelete (index, row) {
       this.$confirm('你确定删除这条记录吗?', '警告', {
@@ -303,9 +319,29 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'error',
-          message: '权限不足!'
+        let url = '/api/sites/delete/' + row._id
+        this.$http.get(url).then((res) => {
+          let result = res.data
+          let status = result.status
+          let message = result.message
+          if (status === 200 && message === 'ok') {
+            this.$message({
+              type: 'success',
+              message: '删除网站成功!'
+            })
+            this.initData()
+          } else {
+            this.$message({
+              type: 'error',
+              message: message
+            })
+          }
+        }).catch((err) => {
+          this.$message({
+            type: 'error',
+            message: '网络出错或服务器出错！'
+          })
+          console.error(err)
         })
       }).catch(() => {
         // pass

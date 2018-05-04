@@ -5,18 +5,21 @@ function controller(db) {
   let searchEngines = database.collection('searchengines');
   let wallpapers = database.collection('wallpapers')
 
+  let ObjectId = require('mongodb').ObjectID;
+
+  /************************************************** 网站 ************************************************************/
   // 获取网站列表信息
   this.getSites = (req, res) => {
     let {page, size, keyword} = req.query;
     let skip = (page - 1) * size;
     let limit = parseInt(size);
-    let conditions = {}
+    let conditions = { deleted: false }
     if (keyword) {
-      conditions = {
-        keyword: {$regex: new RegExp(keyword)}
+      conditions['keyword'] = {
+        $regex: new RegExp(keyword)
       }
     }
-    sites.find(conditions).skip(skip).limit(limit).sort({time: -1}).toArray((err, result) => {
+    sites.find(conditions).skip(skip).limit(limit).sort({create_time: -1}).toArray((err, result) => {
       if (err) {
         res.json({
           message: '数据查询出错!',
@@ -46,18 +49,69 @@ function controller(db) {
     })
   };
 
-  // 新增网站
+  // 新增/编辑网站
   this.addSites = (req, res, next) => {
     let file = req.file;
     let data = req.body;
-    data.imagename = file.originalname;
-    data.src = '/uploads/sites/' + file.filename;
+    let _id = data._id;
+    let timer = (new Date()).getTime()
+
     data.type = data.type.split(',');
-    data.time = (new Date()).getTime();
-    sites.insertOne(data, function(err, result) {
+    data.update_time = timer
+    delete data._id; // 删除_id属性
+
+    if (parseInt(_id) === -1) { // 新增
+      data.imagename = file.originalname;
+      data.src = '/uploads/sites/' + file.filename;
+      data.create_time = timer
+      data.deleted = false;
+      sites.insertOne(data, function(err, result) {
+        if (err) {
+          res.json({
+            message: '数据插入出错!',
+            status: 500,
+            data: {}
+          });
+          throw err;
+        }
+        res.json({
+          message: 'ok',
+          status: 200,
+          data: result
+        });
+      });
+    } else { // 编辑
+      if (typeof file !== 'undefined') {
+        data.imagename = file.originalname;
+        data.src = '/uploads/sites/' + file.filename;
+      }
+      _id = ObjectId(_id);
+      sites.update({_id: _id}, {$set: data}, function(err, result) {
+        if (err) {
+          res.json({
+            message: '数据修改出错!',
+            status: 500,
+            data: {}
+          });
+          throw err;
+        }
+        res.json({
+          message: 'ok',
+          status: 200,
+          data: result
+        });
+      });
+    }
+  };
+
+  // 删除网站
+  this.deleteSites = (req, res) => {
+    let _id = req.params.id
+    _id = ObjectId(_id)
+    sites.update({_id: _id},{$set: {deleted: true}}, function (err, result) {
       if (err) {
         res.json({
-          message: '数据插入出错!',
+          message: '数据删除出错!',
           status: 500,
           data: {}
         });
@@ -68,12 +122,13 @@ function controller(db) {
         status: 200,
         data: result
       });
-    });
-  }
+    })
+  };
 
+  /************************************************** 搜索引擎 ************************************************************/
   // 获取搜索引擎的列表
   this.getSearchEngines =  (req, res) => {
-    searchEngines.find({}).toArray((err, result) => {
+    searchEngines.find({deleted: false}).sort({create_time: 1}).toArray((err, result) => {
       if (err) {
         res.json({
           message: '数据查询出错!',
@@ -97,17 +152,65 @@ function controller(db) {
   this.addSearchEngines = (req, res, next) => {
     let file = req.file;
     let body = req.body;
+    let _id = body._id;
+    let timer = (new Date()).getTime()
+
     let data = {
       title: body.title,
       description: body.description,
-      types: JSON.parse(body.types)
+      types: JSON.parse(body.types),
+      update_time: timer
     };
-    data.logo = '/uploads/searchEngines/' + file.filename;
-    data.time = (new Date()).getTime();
-    searchEngines.insertOne(data, function(err, result) {
+
+    if (typeof file !== 'undefined') {
+      data.logo = '/uploads/searchEngines/' + file.filename;
+    }
+
+    if (parseInt(_id) === -1) { // 新增
+      data.create_time = timer;
+      data.deleted =  false;
+      searchEngines.insertOne(data, function(err, result) {
+        if (err) {
+          res.json({
+            message: '数据插入出错!',
+            status: 500,
+            data: {}
+          });
+          throw err;
+        }
+        res.json({
+          message: 'ok',
+          status: 200,
+          data: result
+        });
+      });
+    } else { // 修改
+      _id = ObjectId(_id);
+      searchEngines.update({_id: _id}, {$set: data}, function(err, result) {
+        if (err) {
+          res.json({
+            message: '数据修改出错!',
+            status: 500,
+            data: {}
+          });
+          throw err;
+        }
+        res.json({
+          message: 'ok',
+          status: 200,
+          data: result
+        });
+      });
+    }
+  };
+
+  this.deleteSearchEngines = (req, res) => {
+    let _id = req.params.id
+    _id = ObjectId(_id)
+    searchEngines.update({_id: _id},{$set: {deleted: true}}, function (err, result) {
       if (err) {
         res.json({
-          message: '数据插入出错!',
+          message: '数据删除出错!',
           status: 500,
           data: {}
         });
@@ -118,15 +221,16 @@ function controller(db) {
         status: 200,
         data: result
       });
-    });
-  }
+    })
+  };
 
+  /************************************************** 壁纸 ************************************************************/
   // 获取壁纸
   this.getWallpapers = (req, res) => {
     let {page, size} = req.query;
     let skip = (page - 1) * size;
     let limit = parseInt(size);
-    wallpapers.find().skip(skip).limit(limit).sort({time: -1}).toArray((err, result) => {
+    wallpapers.find().skip(skip).limit(limit).sort({create_time: -1}).toArray((err, result) => {
       if (err) {
         res.json({
           message: '数据查询出错!',
