@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
-import Site from '@/components/Modules/Site'
-import SearchEngine from '@/components/Modules/SearchEngine'
-import Wallpaper from '@/components/Modules/Wallpaper'
+// import Site from '@/components/Modules/Site'
+// import SearchEngine from '@/components/Modules/SearchEngine'
+// import Wallpaper from '@/components/Modules/Wallpaper'
 
 Vue.use(Router)
 
@@ -21,17 +21,17 @@ export default new Router({
         {
           path: '/site',
           name: 'Site',
-          component: Site
+          component: resolve => require(['../components/modules/Site.vue'], resolve)
         },
         {
           path: '/searchEngine',
           name: 'SearchEngine',
-          component: SearchEngine
+          component: resolve => require(['../components/modules/SearchEngine.vue'], resolve)
         },
         {
           path: '/wallpapers',
           name: 'Wallpaper',
-          component: Wallpaper
+          component: resolve => require(['../components/Modules/Wallpaper.vue'], resolve)
         }
       ]
     }
