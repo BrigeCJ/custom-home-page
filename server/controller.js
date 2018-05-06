@@ -277,6 +277,37 @@ function controller(db) {
       });
     })
   }
+
+  // 随机获取壁纸
+  this.getRandomWallpapers = (req, res) => {
+    wallpapers.find().count((err, count) => {
+      if (err) {
+        res.json({
+          message: '数据查询出错!',
+          status: 500,
+          data: {}
+        });
+      }
+      let randomNum = Math.floor(count*Math.random());
+      wallpapers.find().skip(randomNum).limit(1).toArray(function (err, result) {
+        if (err) {
+          res.json({
+            message: '数据查询出错!',
+            status: 500,
+            data: {}
+          });
+        }
+        res.json({
+          message: 'ok',
+          status: 200,
+          data: {
+            row: result,
+            total: 1
+          }
+        })
+      });
+    })
+  }
 }
 
 module.exports = controller;

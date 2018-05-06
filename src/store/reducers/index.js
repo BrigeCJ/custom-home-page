@@ -1,18 +1,12 @@
-import {
-  TOGGLE_MAIN_SLIDE_BOX,
-  TOGGLE_SEARCH_SLIDE_BOX
-} from '../actionTyps'
+import { combineReducers } from 'redux'
+import slidebox from './slidebox'
+import allSearchEngines from './allSearchEngines'
+import currentSearchEngine from './currentSearchEngine'
+import currentBg from './currentBg'
 
-export default function reducer(state = {
-  showMainSlideBox: false,
-  showSearchSlideBox: false,
-}, action) {
-  switch(action.type) {
-    case TOGGLE_MAIN_SLIDE_BOX:
-      return { ...state, showMainSlideBox: action.flag };
-    case TOGGLE_SEARCH_SLIDE_BOX:
-      return { ...state, showSearchSlideBox: action.flag};
-    default:
-      return state;
-  }
-}
+export default combineReducers({
+  sidebox: slidebox,
+  allSearchEngines: allSearchEngines,
+  currentSearchEngine: currentSearchEngine,
+  currentBg: currentBg
+})
