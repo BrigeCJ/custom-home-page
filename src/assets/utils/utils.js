@@ -62,6 +62,35 @@ export const throttle = (func, wait, options) => {
   };
 };
 
+export const showMessage = (message, duration) => {
+  let oMessageBox = document.getElementById('checkson-message');
+  if (oMessageBox) {
+    try {
+      document.body.removeChild(oMessageBox)
+    } catch (e) {
+      // pass
+    }
+  }
+  let MessageBox = document.createElement('div')
+  MessageBox.className = 'app-info-box';
+  MessageBox.id = 'checkson-message';
+  let MessageText = document.createElement('div');
+  MessageText.className = 'info-text';
+  MessageText.innerText = message;
+  MessageBox.appendChild(MessageText);
+  document.body.appendChild(MessageBox);
+  let timer = setTimeout(() => {
+    if (MessageBox) {
+      try {
+        document.body.removeChild(MessageBox);
+      } catch (err) {
+        // pass
+      }
+    }
+    clearTimeout(timer);
+  }, duration)
+};
+
 export const CustomSetting = {
   get (key) {
     return JSON.parse(localStorage.getItem(key))
@@ -79,10 +108,10 @@ export const CustomSetting = {
   },
   setDefaultSearchEngine () {
     this.set('checkson-default-search-engine', {
-        "_id":"5aea6e4631a37439bc2c0484",
+        "_id":"-1",
         "title":"百度",
         "description":"中国人用的最多的搜索引擎",
-        "logo":"/uploads/searchEngines/6c56e0f1b632f1d282e7e5fbe935592f.png",
+        "logo":"/uploads/searchEngines/36b70b8aed54484d43894582f7353e1a.png",
         "types":[
           {"name":"网页","url":"https://www.baidu.com/baidu?ie=utf-8&wd="},
           {"name":"图片","url":"https://image.baidu.com/search/index?tn=baiduimage&word="},

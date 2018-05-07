@@ -7,7 +7,7 @@ import add from '../assets/imgs/add.png'
 
 import { connect } from 'react-redux'
 import { toggleSearchSlideBox, toggleSuggestions, setCurrentSearchEngine, deleteSearchEngine } from "../store/actions"
-import { CustomSetting, debounce } from '../assets/utils/utils'
+import { CustomSetting, debounce, showMessage } from '../assets/utils/utils'
 
 class Search extends Component {
   constructor(props) {
@@ -22,6 +22,7 @@ class Search extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleEnter = this.handleEnter.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
   changeSearchType (index) {
     if (index !== this.state.showIndex) {
@@ -70,19 +71,28 @@ class Search extends Component {
   }
   handleClick (event) {
     let val = this.refs.input.value;
-    this.handleSearch(val)
+    this.handleSearch(val);
   }
   handleSearch (value) {
     let {currentEngine} = this.props;
     let showIndex = this.state.showIndex;
     window.open(currentEngine.types[showIndex].url + value);
   }
+  handleDelete (event, item) {
+     event.stopPropagation();
+     let { currentEngine, deleteSearchEngine } = this.props;
+     if (currentEngine._id === item._id) {
+       showMessage('当前使用的搜索引擎无法删除', 3000);
+       return false;
+     }
+     deleteSearchEngine(item._id);
+  }
   render () {
     let showIndex = this.state.showIndex;
     let showSearchEngine = this.state.showSearchEngine;
     let suggestions = this.state.suggestions;
 
-    let { currentEngine, allEngines, showSuggestions, toggleSearchSlideBox, toggleSuggestions, setCurrentSearchEngine , deleteSearchEngine} = this.props;
+    let { currentEngine, allEngines, showSuggestions, toggleSearchSlideBox, toggleSuggestions, setCurrentSearchEngine } = this.props;
 
     return (
       <div className="search-box">
@@ -117,9 +127,9 @@ class Search extends Component {
             {
               allEngines.map((item, index) => (<div className="search-item" key={index} onClick={() => {setCurrentSearchEngine(item); this.showSearchSelect(false)}}>
                 <div className="search-item-delete-out">
-                  <div className="search-item-delete" title="删除" onClick={(e) => {e.stopPropagation(); deleteSearchEngine(item._id);}}/>
+                  <div className="search-item-delete" title="删除" onClick={(event) => this.handleDelete(event, item)}/>
                 </div>
-                <img className="search-item-img" src={item.logo} alt="搜索"/>
+                <img className="search-item-img" src={item.logo} alt={item.title}/>
                 <div className="search-item-name">{item.title}</div>
               </div>))
             }
