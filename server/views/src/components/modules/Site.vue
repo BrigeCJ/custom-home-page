@@ -42,7 +42,8 @@
           </el-table-column>
           <el-table-column
             prop="imagename"
-            label="图标">
+            label="图标"
+            width="180">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -56,13 +57,15 @@
           </el-table-column>
           <el-table-column
             prop="type"
-            label="类型"
-            width="180">
+            label="类型">
+            <template slot-scope="scope">
+              <el-tag v-for="(item, index) in scope.row.type" :key="index" style="margin-right: 5px" type="info">{{item}}</el-tag>
+            </template>
           </el-table-column>
           <el-table-column
             prop="source"
             label="来源"
-            width="180">
+            width="120">
           </el-table-column>
           <el-table-column label="操作" width="148">
             <template slot-scope="scope">
@@ -113,14 +116,13 @@
           </el-form-item>
           <el-form-item label="网站分类" :label-width="formLabelWidth" prop="type">
             <el-select v-model="form.type" auto-complete="off" style="width:100%;" :multiple="true">
-              <el-option label="受欢迎的" value="popular"></el-option>
               <el-option label="游戏与娱乐" value="games"></el-option>
               <el-option label="应用" value="apps"></el-option>
               <el-option label="新闻" value="news"></el-option>
-              <el-option label="音乐" value="musics"></el-option>
+              <el-option label="音乐与视频" value="musics"></el-option>
               <el-option label="图片" value="photos"></el-option>
               <el-option label="购物与团购" value="shopping"></el-option>
-              <el-option label="社交与团购" value="social"></el-option>
+              <el-option label="社交与博客" value="social"></el-option>
               <el-option label="体育与旅行" value="sports"></el-option>
               <el-option label="生活方式" value="life"></el-option>
               <el-option label="教育与招聘" value="education"></el-option>
