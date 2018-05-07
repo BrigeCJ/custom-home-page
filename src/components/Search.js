@@ -6,7 +6,7 @@ import searchArrowDown from '../assets/imgs/search-arrow-down.png'
 import add from '../assets/imgs/add.png'
 
 import { connect } from 'react-redux'
-import { toggleSearchSlideBox, setCurrentSearchEngine, deleteSearchEngine } from "../store/actions"
+import { toggleSearchSlideBox, toggleSuggestions, setCurrentSearchEngine, deleteSearchEngine } from "../store/actions"
 import { CustomSetting, debounce } from '../assets/utils/utils'
 
 class Search extends Component {
@@ -14,11 +14,14 @@ class Search extends Component {
     super(props);
     this.state = {
       showIndex: 0,
-      showSearchEngine: false
+      showSearchEngine: false,
+      suggestions: []
     };
     this.changeSearchType = this.changeSearchType.bind(this);
     this.showSearchSelect = this.showSearchSelect.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleEnter = this.handleEnter.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
   changeSearchType (index) {
     if (index !== this.state.showIndex) {
@@ -34,17 +37,52 @@ class Search extends Component {
   }
   handleChange (event) {
     event.stopPropagation();
-    debounce(function () {
+    let self = this;
+    debounce(() => {
       let val = event.target.value;
       let timestamp = new Date().getTime();
-      let url = `http://suggestion.baidu.com/su?wd=${val}&p=3&t=${timestamp}&cb=`;
+      let url = `http://suggestion.baidu.com/su?wd=${val}&p=3&t=${timestamp}&cb=window.baidu.sug`;
+      // 定义回调函数
+      window.baidu = {
+        sug: (json) => {
+          self.props.toggleSuggestions(true);
+          self.setState({
+            suggestions: json.s
+          })
+        }
+      };
+      // 动态添加脚
+      let jsonpScript = document.getElementById('jsonpScript');
+      if (jsonpScript) {
+        document.getElementsByTagName("head")[0].removeChild(jsonpScript);
+      }
+      let script = document.createElement("script");
+      script.src = url;
+      script.id = 'jsonpScript';
+      document.getElementsByTagName("head")[0].appendChild(script);
     }, 300, true)();
+  }
+  handleEnter (event) {
+    event.stopPropagation();
+    if (event.keyCode === 13) {
+      this.handleSearch(event.target.value)
+    }
+  }
+  handleClick (event) {
+    let val = this.refs.input.value;
+    this.handleSearch(val)
+  }
+  handleSearch (value) {
+    let {currentEngine} = this.props;
+    let showIndex = this.state.showIndex;
+    window.open(currentEngine.types[showIndex].url + value);
   }
   render () {
     let showIndex = this.state.showIndex;
     let showSearchEngine = this.state.showSearchEngine;
+    let suggestions = this.state.suggestions;
 
-    let { currentEngine, allEngines, toggleSearchSlideBox, setCurrentSearchEngine , deleteSearchEngine} = this.props;
+    let { currentEngine, allEngines, showSuggestions, toggleSearchSlideBox, toggleSuggestions, setCurrentSearchEngine , deleteSearchEngine} = this.props;
 
     return (
       <div className="search-box">
@@ -56,9 +94,12 @@ class Search extends Component {
         <div className="search-input-box">
           <input className="search-input"
                  autoFocus
+                 ref="input"
                  type="search" placeholder="输入并搜索..."
+                 onKeyDown={this.handleEnter}
                  onChange={this.handleChange} style={{paddingRight: '94px', borderRadius: '4px', background: 'rgb(255, 255, 255)'}}/>
           <button className="search-button"
+                  onClick={this.handleClick}
                   style={{display: 'block', borderTopRightRadius: '4px', borderBottomRightRadius: '4px', opacity: 1}}/>
           <div className="search-choice"
             style={{opacity: 1, borderTopLeftRadius: '4px', borderBottomLeftRadius: '4px'}} onClick={() => this.showSearchSelect(true)}>
@@ -89,6 +130,13 @@ class Search extends Component {
               <div className="search-item-name">添加</div>
             </div>
           </div>
+          <div className="search-suggestion-out" style={{display: showSuggestions ? 'block' : 'none'}}>
+            <ul className="search-suggestion-list">
+              {
+                suggestions.map((item, index) => (<li className="search-suggestion-item" key={index} onClick={() => {toggleSuggestions(false); this.handleSearch(item);}}>{item}</li>))
+              }
+            </ul>
+          </div>
         </div>
       </div>
     )
@@ -98,7 +146,8 @@ class Search extends Component {
 const mapStateToProps = (state) => {
   return {
     currentEngine: state.currentSearchEngine,
-    allEngines: state.allSearchEngines
+    allEngines: state.allSearchEngines,
+    showSuggestions: state.view.showSuggestions
   }
 };
 
@@ -106,6 +155,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     toggleSearchSlideBox: (flag) => {
       dispatch(toggleSearchSlideBox(flag))
+    },
+    toggleSuggestions: (flag) => {
+      dispatch(toggleSuggestions(flag))
     },
     setCurrentSearchEngine: (searchEngine) => {
       dispatch(setCurrentSearchEngine(searchEngine))

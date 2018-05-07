@@ -1,6 +1,7 @@
 import {
   TOGGLE_MAIN_SLIDE_BOX,
   TOGGLE_SEARCH_SLIDE_BOX,
+  TOGGLE_SUGGESTIONS,
   SET_ALL_SEARCH_ENGINES,
   ADD_SEARCH_ENGINE,
   DELETE_SEARCH_ENGINE,
@@ -16,6 +17,11 @@ export const toggleMainSlideBox = (flag) => ({
 
 export const toggleSearchSlideBox = (flag) => ({
   type: TOGGLE_SEARCH_SLIDE_BOX,
+  flag: flag
+});
+
+export const toggleSuggestions = (flag) => ({
+  type: TOGGLE_SUGGESTIONS,
   flag: flag
 });
 

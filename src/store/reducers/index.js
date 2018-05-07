@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux'
-import slidebox from './slidebox'
+import view from './view'
 import allSearchEngines from './allSearchEngines'
 import currentSearchEngine from './currentSearchEngine'
 import currentBg from './currentBg'
 
 export default combineReducers({
-  sidebox: slidebox,
+  view: view,
   allSearchEngines: allSearchEngines,
   currentSearchEngine: currentSearchEngine,
   currentBg: currentBg

@@ -82,7 +82,7 @@ export const CustomSetting = {
         "_id":"5aea6e4631a37439bc2c0484",
         "title":"百度",
         "description":"中国人用的最多的搜索引擎",
-        "logo":"/uploads/searchEngines/3072ac74e067af00fd499d9920dcd421.png",
+        "logo":"/uploads/searchEngines/6c56e0f1b632f1d282e7e5fbe935592f.png",
         "types":[
           {"name":"网页","url":"https://www.baidu.com/baidu?ie=utf-8&wd="},
           {"name":"图片","url":"https://image.baidu.com/search/index?tn=baiduimage&word="},
@@ -120,7 +120,7 @@ export const CustomSetting = {
     this.set('checkson-bg', {
       type: 'image',
       color: 'transparent',
-      src: '/uploads/wallpapers/6147df9f841d0800cbc7717f42226b2f.jpg'
+      src: '/uploads/wallpapers/26334fbe9c1039ebc483d43adb5443b9.jpg'
     })
   },
   setBg (bgInfo) {

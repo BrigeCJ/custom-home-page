@@ -8,7 +8,7 @@ import axios from 'axios';
 import windmill from './assets/imgs/windmill.png'
 
 import { connect } from 'react-redux'
-import { toggleMainSlideBox, toggleSearchSlideBox, setAllSearchEngines, setCurrentSearchEngine, setCurrentBg } from "./store/actions"
+import { toggleMainSlideBox, toggleSearchSlideBox, toggleSuggestions, setAllSearchEngines, setCurrentSearchEngine, setCurrentBg } from "./store/actions"
 import { CustomSetting } from './assets/utils/utils'
 
 class App extends Component {
@@ -64,6 +64,10 @@ class App extends Component {
     this.props.setAllSearchEngines(CustomSetting.getAllEngines());
     this.props.setCurrentSearchEngine(CustomSetting.getCurrentEngine());
     this.props.setCurrentBg(CustomSetting.getBg())
+    // 绑定document事件
+    document.addEventListener('click', () => {
+      this.props.toggleSuggestions(false);
+    })
   }
   componentDidMount () {
     this.initSetting();
@@ -101,8 +105,8 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    showAppCover: state.sidebox.showMainSlideBox,
-    showSearcherCover: state.sidebox.showSearchSlideBox,
+    showAppCover: state.view.showMainSlideBox,
+    showSearcherCover: state.view.showSearchSlideBox,
     currentBg: state.currentBg
   }
 };
@@ -115,6 +119,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     toggleSearchSlideBox: (flag) => {
       dispatch(toggleSearchSlideBox(flag))
     },
+    toggleSuggestions: (flag) => {
+      dispatch(toggleSuggestions(flag));
+    },
     setAllSearchEngines: (searchEngines) => {
       dispatch(setAllSearchEngines(searchEngines))
     },
@@ -124,7 +131,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     setCurrentBg: (bgInfo) => {
       dispatch(setCurrentBg(bgInfo))
     }
-  }
+}
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

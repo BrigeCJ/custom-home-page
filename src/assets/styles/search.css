@@ -252,3 +252,38 @@
     text-overflow: ellipsis;
     color: #999;
 }
+
+.search-suggestion-out {
+    position: absolute;
+    z-index: 400;
+    display: none;
+    width: 100%;
+    margin-top: 20px;
+    border-radius: 3px;
+    background-color: rgba(255,255,255,.99);
+}
+
+.search-suggestion-list {
+    border-radius: 3px;
+}
+
+.search-suggestion-item {
+    font-size: 18px;
+    font-weight: 300;
+    display: flex;
+    overflow: hidden;
+    box-sizing: border-box;
+    height: 50px;
+    padding-right: 40px;
+    padding-left: 72px;
+    list-style: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #333;
+    cursor: pointer;
+    align-items: center;
+}
+
+.search-suggestion-item:hover {
+    background-color: #eee;
+}

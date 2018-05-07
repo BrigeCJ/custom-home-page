@@ -3,7 +3,7 @@ function controller(db) {
   let database = db.db('checkson');
   let sites = database.collection('sites');
   let searchEngines = database.collection('searchengines');
-  let wallpapers = database.collection('wallpapers')
+  let wallpapers = database.collection('wallpapers');
 
   let ObjectId = require('mongodb').ObjectID;
 
@@ -230,7 +230,7 @@ function controller(db) {
     let {page, size} = req.query;
     let skip = (page - 1) * size;
     let limit = parseInt(size);
-    wallpapers.find().skip(skip).limit(limit).sort({create_time: -1}).toArray((err, result) => {
+    wallpapers.find().skip(skip).limit(limit).sort({time: -1}).toArray((err, result) => {
       if (err) {
         res.json({
           message: '数据查询出错!',
