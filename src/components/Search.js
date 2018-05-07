@@ -7,7 +7,7 @@ import add from '../assets/imgs/add.png'
 
 import { connect } from 'react-redux'
 import { toggleSearchSlideBox, setCurrentSearchEngine, deleteSearchEngine } from "../store/actions"
-import { CustomSetting } from '../assets/utils/utils'
+import { CustomSetting, debounce } from '../assets/utils/utils'
 
 class Search extends Component {
   constructor(props) {
@@ -18,6 +18,7 @@ class Search extends Component {
     };
     this.changeSearchType = this.changeSearchType.bind(this);
     this.showSearchSelect = this.showSearchSelect.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
   changeSearchType (index) {
     if (index !== this.state.showIndex) {
@@ -30,6 +31,14 @@ class Search extends Component {
     this.setState({
       showSearchEngine: flag
     })
+  }
+  handleChange (event) {
+    event.stopPropagation();
+    debounce(function () {
+      let val = event.target.value;
+      let timestamp = new Date().getTime();
+      let url = `http://suggestion.baidu.com/su?wd=${val}&p=3&t=${timestamp}&cb=`;
+    }, 300, true)();
   }
   render () {
     let showIndex = this.state.showIndex;
@@ -48,7 +57,7 @@ class Search extends Component {
           <input className="search-input"
                  autoFocus
                  type="search" placeholder="输入并搜索..."
-                 style={{paddingRight: '94px', borderRadius: '4px', background: 'rgb(255, 255, 255)'}}/>
+                 onChange={this.handleChange} style={{paddingRight: '94px', borderRadius: '4px', background: 'rgb(255, 255, 255)'}}/>
           <button className="search-button"
                   style={{display: 'block', borderTopRightRadius: '4px', borderBottomRightRadius: '4px', opacity: 1}}/>
           <div className="search-choice"

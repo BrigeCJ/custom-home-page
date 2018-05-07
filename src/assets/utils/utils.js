@@ -1,22 +1,65 @@
-export const throttle = (callback, ms) => {
-  let args, _this;
+export const debounce = (func, wait, immediate) => {
+  let timeout, args, context, timestamp, result;
 
-  return function () {
-    if (args === void 0) {
-      args = arguments;
-      _this = this;
+  let later = function() {
 
-      setTimeout(function () {
-        if (args.length === 1) {
-          callback.call(_this, args[0]);
-        } else {
-          callback.apply(_this, args);
-        }
+    let last = new Date().getTime() - timestamp;
 
-        args = void 0;
-      }, ms);
+    if (last < wait && last >= 0) {
+      timeout = setTimeout(later, wait - last);
+    } else {
+      timeout = null;
+      if (!immediate) {
+        result = func.apply(context, args);
+        if (!timeout) context = args = null;
+      }
     }
-  }
+  };
+
+  return function() {
+    context = this;
+    args = arguments;
+    timestamp = new Date().getTime();
+    let callNow = immediate && !timeout;
+    if (!timeout) timeout = setTimeout(later, wait);
+    if (callNow) {
+      result = func.apply(context, args);
+      context = args = null;
+    }
+    return result;
+  };
+};
+
+export const throttle = (func, wait, options) => {
+  let context, args, result;
+  let timeout = null;
+  let previous = 0;
+  if (!options) options = {};
+  let later = function() {
+    previous = options.leading === false ? 0 : new Date().getTime();
+    timeout = null;
+    result = func.apply(context, args);
+    if (!timeout) context = args = null;
+  };
+  return function() {
+    let now = new Date().getTime();
+    if (!previous && options.leading === false) previous = now;
+    let remaining = wait - (now - previous);
+    context = this;
+    args = arguments;
+    if (remaining <= 0 || remaining > wait) {
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+      }
+      previous = now;
+      result = func.apply(context, args);
+      if (!timeout) context = args = null;
+    } else if (!timeout && options.trailing !== false) {
+      timeout = setTimeout(later, remaining);
+    }
+    return result;
+  };
 };
 
 export const CustomSetting = {

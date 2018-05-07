@@ -46,9 +46,7 @@ class Home extends Component {
     })
   }
   bundleWindowResize () {
-    window.onresize = () => {
-      throttle(this.zoom(), 25)
-    }
+    window.onresize = throttle(this.zoom.bind(this), 25)
   }
   init () {
     this.zoom();
