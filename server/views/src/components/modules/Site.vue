@@ -52,8 +52,7 @@
           </el-table-column>
           <el-table-column
             prop="url"
-            label="地址"
-            width="180">
+            label="地址">
           </el-table-column>
           <el-table-column
             prop="type"
