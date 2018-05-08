@@ -23,7 +23,7 @@
     width: 100%;
     height: 42px;
     margin-top: 0;
-    padding: 9px 8px 8px 40px;
+    padding: 8px 8px 8px 40px;
     letter-spacing: 1px;
     color: #777;
     border: none;
@@ -78,6 +78,17 @@
     color: #999;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+}
+
+.add-nav-list:hover {
+    font-weight: 500;
+    color: #444;
+}
+
+.add-nav-list.active {
+    font-weight: 500;
+    color: #444;
+    border-left: solid 2px #555;
 }
 
 .add-content {
@@ -135,16 +146,19 @@
     font-weight: 500;
     display: -webkit-box;
     overflow: hidden;
-    margin-top: 5px;
+    margin-top: 10px;
     text-overflow: ellipsis;
     color: #888;
     -webkit-line-clamp: 2;
+    /* eslint-disable-next-line */
+    /* autoprefixer: off */
     -webkit-box-orient: vertical;
+    /* autoprefixer: on */
 }
 
 .add-item-buts {
     display: flex;
-    margin-top: 16px;
+    margin-top: 11px;
     justify-content: space-around;
 }
 

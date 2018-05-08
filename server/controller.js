@@ -10,16 +10,26 @@ function controller(db) {
   /************************************************** 网站 ************************************************************/
   // 获取网站列表信息
   this.getSites = (req, res) => {
-    let {page, size, keyword} = req.query;
+    let {page, size, keyword, type} = req.query;
     let skip = (page - 1) * size;
     let limit = parseInt(size);
     let conditions = { deleted: false }
+    let sort = { create_time: -1 };
     if (keyword) {
       conditions['keyword'] = {
         $regex: new RegExp(keyword)
       }
     }
-    sites.find(conditions).skip(skip).limit(limit).sort({create_time: -1}).toArray((err, result) => {
+    if (type) {
+      if (type === 'popular') {
+        sort = { rate: -1 }
+      } else {
+        conditions['type'] = {
+          $elemMatch: { $eq: type }
+        }
+      }
+    }
+    sites.find(conditions).skip(skip).limit(limit).sort(sort).toArray((err, result) => {
       if (err) {
         res.json({
           message: '数据查询出错!',

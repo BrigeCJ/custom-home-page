@@ -7,7 +7,7 @@ import add from '../assets/imgs/add.png'
 
 import { connect } from 'react-redux'
 import { toggleSearchSlideBox, toggleSuggestions, setCurrentSearchEngine, deleteSearchEngine } from "../store/actions"
-import { CustomSetting, debounce, showMessage } from '../assets/utils/utils'
+import { CustomSetting, showMessage } from '../assets/utils/utils'
 
 class Search extends Component {
   constructor(props) {
@@ -37,31 +37,27 @@ class Search extends Component {
     })
   }
   handleChange (event) {
-    event.stopPropagation();
-    let self = this;
-    debounce(() => {
-      let val = event.target.value;
-      let timestamp = new Date().getTime();
-      let url = `http://suggestion.baidu.com/su?wd=${val}&p=3&t=${timestamp}&cb=window.baidu.sug`;
-      // 定义回调函数
-      window.baidu = {
-        sug: (json) => {
-          self.props.toggleSuggestions(true);
-          self.setState({
-            suggestions: json.s
-          })
-        }
-      };
-      // 动态添加脚
-      let jsonpScript = document.getElementById('jsonpScript');
-      if (jsonpScript) {
-        document.getElementsByTagName("head")[0].removeChild(jsonpScript);
+    let val = event.target.value;
+    let timestamp = new Date().getTime();
+    let url = `http://suggestion.baidu.com/su?wd=${val}&p=3&t=${timestamp}&cb=window.baidu.sug`;
+    // 定义回调函数
+    window.baidu = {
+      sug: (json) => {
+        this.props.toggleSuggestions(true);
+        this.setState({
+          suggestions: json.s
+        })
       }
-      let script = document.createElement("script");
-      script.src = url;
-      script.id = 'jsonpScript';
-      document.getElementsByTagName("head")[0].appendChild(script);
-    }, 300, true)();
+    };
+    // 动态添加脚
+    let jsonpScript = document.getElementById('jsonpScript');
+    if (jsonpScript) {
+      document.getElementsByTagName("head")[0].removeChild(jsonpScript);
+    }
+    let script = document.createElement("script");
+    script.src = url;
+    script.id = 'jsonpScript';
+    document.getElementsByTagName("head")[0].appendChild(script);
   }
   handleEnter (event) {
     event.stopPropagation();
