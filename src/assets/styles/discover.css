@@ -1,0 +1,28 @@
+.discover-card-box {
+    display: block;
+}
+
+.discover-card {
+    position: relative;
+    margin-bottom: 20px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 3px;
+}
+
+.discover-card-wechat-img {
+    max-width: 100%;
+}
+
+.discover-wechat-title {
+    font-size: 14px;
+    text-align: center;
+    color: rgb(32, 32, 32);
+}
+
+.discover-webchat-describe {
+    font-size: 12px;
+    line-height: 18px;
+    color: rgb(143, 143, 143);
+    margin: 0px;
+    padding: 12px 24px 20px;
+}

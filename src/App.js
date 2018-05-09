@@ -86,7 +86,9 @@ class App extends Component {
         <div className="app-bg" style={{backgroundImage: 'url(' + currentBg.src + ')'}}/>
         <div className="app-bg-cover" style={{backgroundColor: 'rgba(0, 0, 0, 0.38'}}/>
         <div className="app-home">
-          <Home />
+          <div className="app-home-container" style={{zoom: (setting.mainZoom / 100).toFixed(2)}}>
+            <Home />
+          </div>
         </div>
         <div className="app-operation" onClick={() => toggleMainSlideBox(true)}/>
         <div className="app-change-wrapper" style={{display: setting.isShowRandomWallpaperBtn ? 'block' : 'none', visibility: 'visible'}}>

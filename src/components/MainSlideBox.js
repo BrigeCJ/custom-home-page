@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import AddSite from './AddSite'
 import Setting from './Setting'
+import Discover from './Discover'
 import '../assets/styles/mainSlideBox.css'
 
 import { toggleMainSlideBox } from '../store/actions'
@@ -40,6 +41,10 @@ class MainSlideBox extends Component {
         {/* -- 添加 -- */}
         <div className="main-slide-box-content" style={{display: showIndex === 0 ? 'block' : 'none'}}>
           <AddSite />
+        </div>
+        {/* -- 发现 -- */}
+        <div className="main-slide-box-content" style={{display: showIndex === 2 ? 'block' : 'none'}}>
+          <Discover />
         </div>
         {/* -- 设置 -- */}
         <div className="main-slide-box-content setting" style={{display: showIndex === 3 ? 'block' : 'none'}}>
