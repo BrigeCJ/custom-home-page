@@ -70,9 +70,15 @@ class Search extends Component {
     this.handleSearch(val);
   }
   handleSearch (value) {
-    let {currentEngine} = this.props;
+    let {currentEngine, setting} = this.props;
     let showIndex = this.state.showIndex;
-    window.open(currentEngine.types[showIndex].url + value);
+    let isSearchInNewTab = setting.isSearchInNewTab;
+    let url = currentEngine.types[showIndex].url;
+    if (isSearchInNewTab) {
+      window.open(url + value);
+    } else {
+      window.location.href = url + value;
+    }
   }
   handleDelete (event, item) {
      event.stopPropagation();
@@ -88,25 +94,33 @@ class Search extends Component {
     let showSearchEngine = this.state.showSearchEngine;
     let suggestions = this.state.suggestions;
 
-    let { currentEngine, allEngines, showSuggestions, toggleSearchSlideBox, toggleSuggestions, setCurrentSearchEngine } = this.props;
+    let { currentEngine, allEngines, setting, showSuggestions, toggleSearchSlideBox, toggleSuggestions, setCurrentSearchEngine } = this.props;
 
+    let isShowSearchType = setting.isShowSearchType;
+    let isShowSearchBtn = setting.isShowSearchBtn;
+    let searchBoxShadow = setting.searchBoxShadow;
+    let isOpenFontShadow = setting.isOpenFontShadow;
+    let fontColor = setting.fontColor;
+    let searchBoxRadius = setting.searchBoxRadius;
+    let searchBoxOpacity = setting.searchBoxOpacity;
     return (
       <div className="search-box">
-        <ul className="search-type-box">
+        <ul className="search-type-box" style={{visibility: isShowSearchType ? 'visible' : 'hidden'}}>
           {
-            currentEngine.types.map((item, index) => <li className={showIndex === index ? 'search-type selected' : 'search-type'} key={index} onClick={() => this.changeSearchType(index)}>{item.name}</li>)
+            currentEngine.types.map((item, index) => <li className={showIndex === index ? 'search-type selected' : 'search-type'} style={{textShadow: isOpenFontShadow ? '' : 'none', color: fontColor}} key={index} onClick={() => this.changeSearchType(index)}>{item.name}</li>)
           }
         </ul>
-        <div className="search-input-box">
+        <div className="search-input-box" style={{boxShadow: searchBoxShadow ? '' : 'none', borderRadius: searchBoxRadius + 'px', opacity: (searchBoxOpacity / 100).toFixed(2)}}>
           <input className="search-input"
                  autoFocus
                  ref="input"
                  type="search" placeholder="输入并搜索..."
                  onKeyDown={this.handleEnter}
-                 onChange={this.handleChange} style={{paddingRight: '94px', borderRadius: '4px', background: 'rgb(255, 255, 255)'}}/>
+                 onChange={this.handleChange}
+                 style={{paddingRight: isShowSearchBtn ? '94px' : '20px', borderRadius: searchBoxRadius + 'px', background: 'rgb(255, 255, 255)'}}/>
           <button className="search-button"
                   onClick={this.handleClick}
-                  style={{display: 'block', borderTopRightRadius: '4px', borderBottomRightRadius: '4px', opacity: 1}}/>
+                  style={{display: isShowSearchBtn ? 'block' : 'none', borderTopRightRadius: searchBoxRadius + 'px', borderBottomRightRadius: searchBoxRadius + 'px', opacity: 1}}/>
           <div className="search-choice"
             style={{opacity: 1, borderTopLeftRadius: '4px', borderBottomLeftRadius: '4px'}} onClick={() => this.showSearchSelect(true)}>
             <img className="search-logo" src={currentEngine.logo} alt={currentEngine.title}/>
@@ -153,7 +167,8 @@ const mapStateToProps = (state) => {
   return {
     currentEngine: state.currentSearchEngine,
     allEngines: state.allSearchEngines,
-    showSuggestions: state.view.showSuggestions
+    showSuggestions: state.view.showSuggestions,
+    setting: state.setting
   }
 };
 

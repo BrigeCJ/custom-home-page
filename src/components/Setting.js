@@ -1,40 +1,83 @@
 import React, {Component} from 'react'
 import '../assets/styles/setting.css'
 
+import { connect } from 'react-redux'
+import {
+  setAllSearchEngines,
+  setCurrentBg,
+  setCurrentSearchEngine,
+  setCurrentSetting,
+  setCurrentSites,
+  updateCurrentSetting
+} from "../store/actions";
+import {CustomSetting} from "../assets/utils/utils";
+
 class Setting extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      targetOpenMethods: [{
-        title: '在新标签页中打开打开网站',
-        checked: true
-      }, {
-        title: '在新标签页中打开第三方搜索结果',
-        checked: false
-      }, {
-        title: '在新标签页中打开书签链接',
-        checked: false
-      }, {
-        title: '在新标签页中打开历史记录',
-        checked: false
-      }]
+      colors: [
+        'rgb(221, 221, 221)',
+        'rgb(244, 67, 54)',
+        'rgb(255, 152, 0)',
+        'rgb(255, 235, 59)',
+        'rgb(76, 175, 80)',
+        'rgb(0, 188, 212)',
+        'rgb(33, 150, 243)',
+        'rgb(103, 58, 183)',
+        'rgb(51, 51, 51)',
+      ]
     };
   }
+  handleCheckboxChange (key, event) {
+    let flag = event.target.checked;
+    this.props.updateCurrentSetting(key, flag);
+  }
+  handleStepChange (value, key, event) {
+    event.stopPropagation();
+    if(value < 50 || value > 150) {
+      return false;
+    }
+    this.props.updateCurrentSetting(key, value);
+  }
+  handleRangeChange (key, event) {
+    let value = event.target.value;
+    this.props.updateCurrentSetting(key, value);
+  }
+  handleReset () {
+    CustomSetting.setDefaultSearchEngine();
+    CustomSetting.setAllEngines([]);
+    CustomSetting.setCurrentEngine(CustomSetting.getDefaultSearchEngine());
+    CustomSetting.setCustomEngines([]);
+    CustomSetting.setDefaultSites();
+    CustomSetting.setDefaultBg();
+    CustomSetting.setDefaultSetting();
+    this.props.setAllSearchEngines(CustomSetting.getAllEngines());
+    this.props.setCurrentSearchEngine(CustomSetting.getCurrentEngine());
+    this.props.setCurrentBg(CustomSetting.getBg());
+    this.props.setCurrentSites(CustomSetting.getSites());
+    this.props.setCurrentSetting(CustomSetting.getSetting());
+  }
   render () {
-    let targetOpenMethods = this.state.targetOpenMethods
+    let { setting, updateCurrentSetting } = this.props;
+    let colors = this.state.colors;
     return (
       <div className="setting-box">
         <div className="setting-item-wrapper">
           <div className="setting-item-title">目标打开方式</div>
           <div className="setting-item">
-          {
-            targetOpenMethods.map((item, index) => (<div className="setting-toggle" key={index}>
+            <div className="setting-toggle">
                 <div className="setting-toggle-text setting-text-btn-max-width">
-                  <span>{item.title}</span>
+                  <span>在新标签页中打开网站</span>
                 </div>
-                <input type="checkbox" className="checkbox-toggle" defaultChecked={item.checked}/>
-            </div>))
-          }
+                <input type="checkbox" className="checkbox-toggle" name="isOpenLinkNewTab" checked={setting.isOpenLinkNewTab} onChange={this.handleCheckboxChange.bind(this, 'isOpenLinkNewTab')}/>
+            </div>
+            <div className="setting-toggle">
+                <div className="setting-toggle-text setting-text-btn-max-width">
+                  <span>在新标签页中打开第三方搜索结果</span>
+                </div>
+                <input type="checkbox" className="checkbox-toggle" name="isSearchInNewTab" checked={setting.isSearchInNewTab} onChange={this.handleCheckboxChange.bind(this, 'isSearchInNewTab')}/>
+            </div>
             <div className="setting-toggle">
               <p className="tips">注意：以上打开方式仅作用于该应用</p>
             </div>
@@ -48,9 +91,9 @@ class Setting extends Component {
                 <span>主屏幕视图缩放</span>
               </div>
               <div className="setting-add-reduce-box">
-                <button className="setting-reduce-btn setting-reduce-add-common"/>
-                <span className="setting-reduce-add-number">100%</span>
-                <button className="setting-add-btn setting-reduce-add-common"/>
+                <button className="setting-reduce-btn setting-reduce-add-common" onClick={this.handleStepChange.bind(this, setting.mainZoom - 10, 'mainZoom')}/>
+                <span className="setting-reduce-add-number">{setting.mainZoom}%</span>
+                <button className="setting-add-btn setting-reduce-add-common" onClick={this.handleStepChange.bind(this, setting.mainZoom + 10, 'mainZoom')}/>
               </div>
             </div>
             <div className="setting-toggle">
@@ -58,30 +101,41 @@ class Setting extends Component {
                 <span>侧边栏视图缩放</span>
               </div>
               <div className="setting-add-reduce-box">
-                <button className="setting-reduce-btn setting-reduce-add-common"/>
-                <span className="setting-reduce-add-number">100%</span>
-                <button className="setting-add-btn setting-reduce-add-common"/>
+                <button className="setting-reduce-btn setting-reduce-add-common" onClick={this.handleStepChange.bind(this, setting.rightSlideZoom - 10, 'rightSlideZoom')}/>
+                <span className="setting-reduce-add-number">{setting.rightSlideZoom}%</span>
+                <button className="setting-add-btn setting-reduce-add-common" onClick={this.handleStepChange.bind(this, setting.rightSlideZoom + 10, 'rightSlideZoom')}/>
               </div>
             </div>
             <div className="setting-toggle">
               <div className="setting-toggle-text setting-text-btn-max-width">
                 <span>在右下角显示随机切换壁纸按钮</span>
               </div>
-              <input type="checkbox" className="checkbox-toggle"/>
+              <input type="checkbox" className="checkbox-toggle" checked={setting.isShowRandomWallpaperBtn} onChange={this.handleCheckboxChange.bind(this, 'isShowRandomWallpaperBtn')}/>
+            </div>
+          </div>
+        </div>
+        <div className="setting-item-wrapper">
+          <div className="setting-item-title">图标</div>
+          <div className="setting-item">
+            <div className="setting-toggle">
+              <div className="setting-toggle-text setting-text-btn-max-width">
+                <span>极简模式</span>
+              </div>
+              <input type="checkbox" className="checkbox-toggle" checked={setting.isSimpleModel} onChange={this.handleCheckboxChange.bind(this, 'isSimpleModel')}/>
             </div>
             <div className="setting-toggle">
               <div className="setting-toggle-text setting-text-btn-max-width">
                 <span>图标阴影</span>
               </div>
-              <input type="checkbox" className="checkbox-toggle"/>
+              <input type="checkbox" className="checkbox-toggle" checked={setting.isShowIconShadow} onChange={this.handleCheckboxChange.bind(this, 'isShowIconShadow')}/>
             </div>
             <div className="setting-toggle">
               <div className="setting-toggle-text setting-text-btn-max-width">
                 <span>图标圆角</span>
               </div>
               <div className="setting-range-progress">
-                <input type="range" className="setting-range" min="0" max="50" data-progress="50%"/>
-                <progress className="setting-progress" max="50" value="50"/>
+                <input type="range" className="setting-range" min="0" max="50" value={setting.iconBorderRadius} data-progress={setting.iconBorderRadius + '%'} onChange={this.handleRangeChange.bind(this, 'iconBorderRadius')}/>
+                <progress className="setting-progress" max="50" value={setting.iconBorderRadius || 0}/>
               </div>
             </div>
             <div className="setting-toggle">
@@ -89,8 +143,8 @@ class Setting extends Component {
                 <span>图标不透明</span>
               </div>
               <div className="setting-range-progress">
-                <input type="range" className="setting-range" min="0" max="50" data-progress="50%"/>
-                <progress className="setting-progress" max="50" value="50"/>
+                <input type="range" className="setting-range" min="10" max="100" value={setting.iconOpacity} data-progress={(setting.iconOpacity / 100).toFixed(2)} onChange={this.handleRangeChange.bind(this, 'iconOpacity')}/>
+                <progress className="setting-progress" max="90" value={setting.iconOpacity - 10 || 0}/>
               </div>
             </div>
           </div>
@@ -100,35 +154,35 @@ class Setting extends Component {
           <div className="setting-item">
             <div className="setting-toggle">
               <div className="setting-toggle-text setting-text-btn-max-width">
-                <span>隐藏搜索框</span>
+                <span>显示搜索框</span>
               </div>
-              <input type="checkbox" className="checkbox-toggle"/>
+              <input type="checkbox" className="checkbox-toggle" name="isShowSearchBox" checked={setting.isShowSearchBox} onChange={this.handleCheckboxChange.bind(this, 'isShowSearchBox')}/>
             </div>
             <div className="setting-toggle">
               <div className="setting-toggle-text setting-text-btn-max-width">
-                <span>隐藏搜索类别</span>
+                <span>显示搜索类别</span>
               </div>
-              <input type="checkbox" className="checkbox-toggle"/>
+              <input type="checkbox" className="checkbox-toggle" name="isShowSearchType" checked={setting.isShowSearchType} onChange={this.handleCheckboxChange.bind(this, 'isShowSearchType')}/>
             </div>
             <div className="setting-toggle">
               <div className="setting-toggle-text setting-text-btn-max-width">
-                <span>隐藏搜索按钮</span>
+                <span>显示搜索按钮</span>
               </div>
-              <input type="checkbox" className="checkbox-toggle"/>
+              <input type="checkbox" className="checkbox-toggle" name="isShowSearchBtn" checked={setting.isShowSearchBtn} onChange={this.handleCheckboxChange.bind(this, 'isShowSearchBtn')}/>
             </div>
             <div className="setting-toggle">
               <div className="setting-toggle-text setting-text-btn-max-width">
                 <span>搜索框阴影</span>
               </div>
-              <input type="checkbox" className="checkbox-toggle"/>
+              <input type="checkbox" className="checkbox-toggle" name="searchBoxShadow" checked={setting.searchBoxShadow} onChange={this.handleCheckboxChange.bind(this, 'searchBoxShadow')}/>
             </div>
             <div className="setting-toggle">
               <div className="setting-toggle-text setting-text-btn-max-width">
                 <span>搜索框大小</span>
               </div>
               <div className="setting-range-progress">
-                <input type="range" className="setting-range" min="0" max="50" data-progress="50%"/>
-                <progress className="setting-progress" max="50" value="50"/>
+                <input type="range" className="setting-range" min="50" max="150" value={setting.searchBoxSize} data-progress={setting.searchBoxSize + '%'} onChange={this.handleRangeChange.bind(this, 'searchBoxSize')}/>
+                <progress className="setting-progress" max="100" value={setting.searchBoxSize - 50 || 0}/>
               </div>
             </div>
             <div className="setting-toggle">
@@ -136,8 +190,8 @@ class Setting extends Component {
                 <span>搜索框圆角</span>
               </div>
               <div className="setting-range-progress">
-                <input type="range" className="setting-range" min="0" max="50" data-progress="50%"/>
-                <progress className="setting-progress" max="50" value="50"/>
+                <input type="range" className="setting-range" min="0" max="33" value={setting.searchBoxRadius} data-progress={setting.searchBoxRadius} onChange={this.handleRangeChange.bind(this, 'searchBoxRadius')}/>
+                <progress className="setting-progress" max="33" value={setting.searchBoxRadius || 0}/>
               </div>
             </div>
             <div className="setting-toggle">
@@ -145,8 +199,43 @@ class Setting extends Component {
                 <span>搜索框不透明度</span>
               </div>
               <div className="setting-range-progress">
-                <input type="range" className="setting-range" min="0" max="50" data-progress="50%"/>
-                <progress className="setting-progress" max="50" value="50"/>
+                <input type="range" className="setting-range" min="10" max="100" value={setting.searchBoxOpacity} data-progress={(setting.searchBoxOpacity / 100).toFixed(2)} onChange={this.handleRangeChange.bind(this, 'searchBoxOpacity')}/>
+                <progress className="setting-progress" max="90" value={setting.searchBoxOpacity - 10 || 0}/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="setting-item-wrapper">
+          <div className="setting-item-title">字体</div>
+          <div className="setting-item">
+            <div className="setting-toggle">
+              <div className="setting-toggle-text setting-text-btn-max-width">
+                <span>字体阴影</span>
+              </div>
+              <input type="checkbox" className="checkbox-toggle" name="isOpenFontShadow" checked={setting.isOpenFontShadow} onChange={this.handleCheckboxChange.bind(this, 'isOpenFontShadow')}/>
+            </div>
+            <div className="setting-toggle">
+              <div className="setting-toggle-text setting-text-btn-max-width">
+                <span>字体大小</span>
+              </div>
+              <div className="setting-range-progress">
+                <input type="range" className="setting-range" min="12" max="30" value={setting.fontSize} data-progress={setting.fontSize} onChange={this.handleRangeChange.bind(this, 'fontSize')}/>
+                <progress className="setting-progress" max="18" value={setting.fontSize - 12 || 0}/>
+              </div>
+            </div>
+            <div className="setting-toggle">
+              <div className="setting-toggle-text setting-text-btn-max-width">
+                <span>字体颜色</span>
+              </div>
+              <div className="setting-font-color-box">
+                <div className="add-custom-color-box">
+                  {
+                    colors.map((item, index) => (<div className="add-custom-color"
+                                                      key={index}
+                                                      style={{backgroundColor: item, border: setting.fontColor === item ? `1px solid ${item}` : ''}}
+                                                      onClick={() => updateCurrentSetting('fontColor', item)}/>))
+                  }
+                </div>
               </div>
             </div>
           </div>
@@ -158,7 +247,7 @@ class Setting extends Component {
           <div className="setting-toggle">
             <div className="tips">执行操作后将所有设置项还原</div>
             <div className="reset-btn-box">
-              <button className="reset-btn">立即还原</button>
+              <button className="reset-btn" onClick={this.handleReset.bind(this)}>立即还原</button>
             </div>
           </div>
         </div>
@@ -172,4 +261,33 @@ class Setting extends Component {
   }
 }
 
-export default Setting;
+const mapStateToProps = (state) => {
+  return {
+    setting: state.setting
+  }
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    updateCurrentSetting: (key, value) => {
+      dispatch(updateCurrentSetting(key, value))
+    },
+    setAllSearchEngines: (searchEngines) => {
+      dispatch(setAllSearchEngines(searchEngines))
+    },
+    setCurrentSearchEngine: (searchEngine) => {
+      dispatch(setCurrentSearchEngine(searchEngine))
+    },
+    setCurrentBg: (bgInfo) => {
+      dispatch(setCurrentBg(bgInfo))
+    },
+    setCurrentSites: (sites) => {
+      dispatch(setCurrentSites(sites))
+    },
+    setCurrentSetting: (setting) => {
+      dispatch(setCurrentSetting(setting))
+    }
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Setting);

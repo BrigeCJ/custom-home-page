@@ -50,6 +50,13 @@ class Site extends Component {
         }
       }
     }
+    let isSimpleModel = setting.isSimpleModel;
+    let isShowIconShadow = setting.isShowIconShadow;
+    let isOpenFontShadow = setting.isOpenFontShadow;
+    let fontColor = setting.fontColor;
+    let fontSize = setting.fontSize;
+    let iconBorderRadius = setting.iconBorderRadius;
+    let iconOpacity = setting.iconOpacity;
     return (
       <div className="main-box">
         <div className="home-main">
@@ -60,12 +67,20 @@ class Site extends Component {
                 <div className="home-icon-box home-page" key={i}>
                   {
                     arr.map((item, index) => (
-                      <div className={showSitesSetting ? 'home-icon home-icon-setting home-icon-shake': 'home-icon home-icon-setting'} draggable="true" key={index}>
-                        <a href={item.url} target="_blank" onContextMenu={this.handleContextMenu} className="home-icon-img" style={{backgroundImage: 'url('+item.src+')', backgroundColor: 'transparent'}}>
+                      <div className={showSitesSetting ? 'home-icon home-icon-setting home-icon-shake': 'home-icon home-icon-setting'}
+                           style={{opacity: (iconOpacity / 100).toFixed(2)}}
+                           draggable="true"
+                           key={index}>
+                        <a href={item.url}
+                           target={setting.isOpenLinkNewTab ? '_blank': '_self'}
+                           onContextMenu={this.handleContextMenu}
+                           className="home-icon-img"
+                           style={{backgroundImage: 'url('+item.src+')', boxShadow: isShowIconShadow ? '' : 'none',backgroundColor: 'transparent', borderRadius: iconBorderRadius + '%'}}>
                           <div className="home-icon-delete" title="删除" onClick={(e) => {this.handleDelete(e, item._id)}}/>
                           <div className="home-icon-edit"/>
                         </a>
-                        <div className="home-icon-name">{item.title}</div>
+                        <div className="home-icon-name"
+                             style={{display: isSimpleModel ? 'none': 'block', textShadow: isOpenFontShadow ? '' : 'none', color: fontColor, fontSize: fontSize + 'px'}}>{item.title}</div>
                       </div>
                     ))
                   }

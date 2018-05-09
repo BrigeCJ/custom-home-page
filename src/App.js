@@ -78,9 +78,9 @@ class App extends Component {
     this.initSetting();
   }
   render () {
-    let { showAppCover, showSearcherCover, currentBg, toggleMainSlideBox, toggleSearchSlideBox } = this.props;
+    let { showAppCover, showSearcherCover, currentBg, setting, toggleMainSlideBox, toggleSearchSlideBox } = this.props;
     let windmillClassName = this.state.windmillClassName;
-
+    let rightSlideZoom = setting.rightSlideZoom || 100;
     return (
       <div className="app">
         <div className="app-bg" style={{backgroundImage: 'url(' + currentBg.src + ')'}}/>
@@ -89,12 +89,12 @@ class App extends Component {
           <Home />
         </div>
         <div className="app-operation" onClick={() => toggleMainSlideBox(true)}/>
-        <div className="app-change-wrapper" style={{display: 'block', visibility: 'visible'}}>
+        <div className="app-change-wrapper" style={{display: setting.isShowRandomWallpaperBtn ? 'block' : 'none', visibility: 'visible'}}>
           <img className={`windmill-img ${windmillClassName}`} src={windmill} alt="风车" onClick={this.changeWrapper}/>
           <div className="windmill-rect"/>
         </div>
         <div className="app-cover" style={{display: showAppCover ? 'block': 'none'}} onClick={() => toggleMainSlideBox(false)}/>
-        <div id="mainSlidBox" className={showAppCover ? 'app-slideBox slide-show slide-box-shadow': 'app-slideBox'} style={{zoom: 1}}>
+        <div id="mainSlidBox" className={showAppCover ? 'app-slideBox slide-show slide-box-shadow': 'app-slideBox'} style={{zoom: rightSlideZoom / 100.0}}>
           <MainSlideBox />
         </div>
         <div id="searchAdd">
@@ -112,7 +112,8 @@ const mapStateToProps = (state) => {
   return {
     showAppCover: state.view.showMainSlideBox,
     showSearcherCover: state.view.showSearchSlideBox,
-    currentBg: state.currentBg
+    currentBg: state.currentBg,
+    setting: state.setting
   }
 };
 

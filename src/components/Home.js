@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import Search from './Search'
 import Site from './Site'
 import '../assets/styles/home.css';
-import {throttle} from "../assets/utils/utils";
+import { throttle } from "../assets/utils/utils";
+
+import { connect } from 'react-redux'
 
 class Home extends Component {
   constructor(props) {
@@ -13,7 +15,7 @@ class Home extends Component {
   }
   zoom() { // 按屏幕分辨率来动态缩放
     let xrate = 5.0 / 6,
-        yrate = 4 / 4.8,
+        yrate = 4.0 / 4.8,
         settingMainZoom = 90;
     let homeBox = this.refs['homeBox'];
     let homeBoxWidth = homeBox.clientWidth - 100,
@@ -57,9 +59,12 @@ class Home extends Component {
   }
   render() {
     let zoom = this.state.zoom;
+    let { setting } = this.props;
+    let isShowSearchBox = setting.isShowSearchBox;
+    let searchBoxSize = setting.searchBoxSize;
     return (
       <div className="home-box" style={{zoom: zoom}} ref="homeBox">
-        <div className="home-search" style={{zoom: 1}}>
+        <div className="home-search" style={{display: isShowSearchBox ? 'flex': 'none', zoom: (searchBoxSize / 100).toFixed(2)}}>
           <Search />
         </div>
         <div className="home-main">
@@ -70,4 +75,10 @@ class Home extends Component {
   }
 }
 
-export default Home
+const mapStateToProps = (state) => {
+  return {
+    setting: state.setting
+  }
+};
+
+export default connect(mapStateToProps)(Home)

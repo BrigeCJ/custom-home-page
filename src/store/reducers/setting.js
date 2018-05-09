@@ -11,7 +11,7 @@ export default function reducer(state = {}, action) {
       return action.setting;
     case UPDATE_CURRENT_SETTING:
       let newState = Object.assign({}, state, {[action.key]: action.value});
-      CustomSetting.setSites(newState);
+      CustomSetting.setSetting(newState);
       return newState;
     default:
       return state;
