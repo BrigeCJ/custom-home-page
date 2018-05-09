@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Search from './Search'
-import Main from './Main'
+import Site from './Site'
 import '../assets/styles/home.css';
 import {throttle} from "../assets/utils/utils";
 
@@ -63,7 +63,7 @@ class Home extends Component {
           <Search />
         </div>
         <div className="home-main">
-          <Main />
+          <Site />
         </div>
       </div>
     )

@@ -8,7 +8,7 @@ import axios from 'axios';
 import windmill from './assets/imgs/windmill.png'
 
 import { connect } from 'react-redux'
-import { toggleMainSlideBox, toggleSearchSlideBox, toggleSuggestions, setAllSearchEngines, setCurrentSearchEngine, setCurrentBg } from "./store/actions"
+import { toggleMainSlideBox, toggleSearchSlideBox, toggleSuggestions, toggleSetting, setAllSearchEngines, setCurrentSearchEngine, setCurrentBg, setCurrentSites, setCurrentSetting } from "./store/actions"
 import { CustomSetting } from './assets/utils/utils'
 
 class App extends Component {
@@ -58,15 +58,20 @@ class App extends Component {
       CustomSetting.setAllEngines([]);
       CustomSetting.setCurrentEngine(CustomSetting.getDefaultSearchEngine());
       CustomSetting.setCustomEngines([]);
+      CustomSetting.setDefaultSites();
       CustomSetting.setDefaultBg();
+      CustomSetting.setDefaultSetting();
     }
     // 设置应用状态
     this.props.setAllSearchEngines(CustomSetting.getAllEngines());
     this.props.setCurrentSearchEngine(CustomSetting.getCurrentEngine());
-    this.props.setCurrentBg(CustomSetting.getBg())
+    this.props.setCurrentBg(CustomSetting.getBg());
+    this.props.setCurrentSites(CustomSetting.getSites());
+    this.props.setCurrentSetting(CustomSetting.getSetting());
     // 绑定document事件
     document.addEventListener('click', () => {
       this.props.toggleSuggestions(false);
+      this.props.toggleSetting(false);
     })
   }
   componentDidMount () {
@@ -120,7 +125,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(toggleSearchSlideBox(flag))
     },
     toggleSuggestions: (flag) => {
-      dispatch(toggleSuggestions(flag));
+      dispatch(toggleSuggestions(flag))
+    },
+    toggleSetting: (flag) => {
+      dispatch(toggleSetting(flag))
     },
     setAllSearchEngines: (searchEngines) => {
       dispatch(setAllSearchEngines(searchEngines))
@@ -130,8 +138,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     setCurrentBg: (bgInfo) => {
       dispatch(setCurrentBg(bgInfo))
+    },
+    setCurrentSites: (sites) => {
+      dispatch(setCurrentSites(sites))
+    },
+    setCurrentSetting: (setting) => {
+      dispatch(setCurrentSetting(setting))
     }
-}
+  }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

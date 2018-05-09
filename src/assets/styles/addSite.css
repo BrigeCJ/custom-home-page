@@ -150,7 +150,6 @@
     text-overflow: ellipsis;
     color: #888;
     -webkit-line-clamp: 2;
-    /* eslint-disable-next-line */
     /* autoprefixer: off */
     -webkit-box-orient: vertical;
     /* autoprefixer: on */
@@ -180,19 +179,23 @@
     border-radius: 5px;
 }
 
-.add-item-addbu:hover {
+.add-item-addbu:not(.add-item-added):hover {
     color: #555;
     background-color: #eee;
 }
 
 .add-item-added {
-    cursor: pointer;
+    cursor: default;
     color: #ccc;
     background-color: rgba(255,255,255,0);
 }
 
 .add-item-added .add-btn-added {
     display: inline;
+}
+
+.add-item-added .add-btn-added {
+    display: block;
 }
 
 .add-btn-added {
@@ -209,7 +212,7 @@
     margin-left: auto;
 }
 
-.infinity-loading {
+.checkson-loading {
     width: 12px;
     height: 12px;
     animation: spin 1s infinite linear;
@@ -224,5 +227,55 @@
     }
     100% {
         transform: rotate(360deg);
+    }
+}
+
+.add-no-more {
+    font-size: 13px;
+    font-weight: 300;
+    width: 100%;
+    text-align: center;
+    color: #aaa;
+    padding-bottom: 20px;
+}
+
+.add-loading-box {
+    display: flex;
+    width: 100%;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.add-loading {
+    width: 120px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-loading .bound {
+    width: 20px;
+    height: 20px;
+    background-color: cornflowerblue;
+    border-radius: 100%;
+    display: inline-block;
+    animation: boundLoading 1.2s infinite ease-in-out;
+    animation-fill-mode: both;
+}
+
+.add-loading .bound1 {
+    animation-delay: -0.32s;
+}
+
+.add-loading .bound2 {
+    animation-delay: -0.16s;
+}
+
+@keyframes boundLoading {
+    0%, 80%, 100% {
+        transform: scale(0.0);
+    }
+
+    40% {
+        transform: scale(1.0);
     }
 }

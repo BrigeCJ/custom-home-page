@@ -1,7 +1,8 @@
-// 侧边栏
+// 视图层
 export const TOGGLE_MAIN_SLIDE_BOX = 'SHOW_MAIN_SLIDE_BOX';
 export const TOGGLE_SEARCH_SLIDE_BOX = 'TOGGLE_SEARCH_SLIDE_BOX';
 export const TOGGLE_SUGGESTIONS = 'TOGGLE_SUGGESTIONS';
+export const TOGGLE_SETTING = 'TOGGLE_SETTING';
 
 // 当前拥有的搜索引擎
 export const SET_ALL_SEARCH_ENGINES = 'SET_ALL_SEARCH_ENGINES';
@@ -16,3 +17,12 @@ export const SET_CUSTOM_SEARCH_ENGINES = 'SET_CUSTOM_SEARCH_ENGINES';
 
 // 当前壁纸的信息
 export const SET_CURRENT_BG = 'SET_CURRENT_BG';
+
+// 当前拥有的网站
+export const SET_CURRENT_SITES = 'SET_CURRENT_SITES';
+export const ADD_SITE = 'ADD_SITE';
+export const DELETE_SITE = 'DELETE_SITE';
+
+// 当前网站设置
+export const SET_CURRENT_SETTING = 'SET_CURRENT_SETTING';
+export const UPDATE_CURRENT_SETTING = 'UPDATE_CURRENT_SETTING';

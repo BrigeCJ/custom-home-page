@@ -73,8 +73,9 @@ function controller(db) {
     if (parseInt(_id) === -1) { // 新增
       data.imagename = file.originalname;
       data.src = '/uploads/sites/' + file.filename;
-      data.create_time = timer
+      data.create_time = timer;
       data.deleted = false;
+      data.rate = 0;
       sites.insertOne(data, function(err, result) {
         if (err) {
           res.json({
