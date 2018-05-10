@@ -8,16 +8,34 @@ class Site extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      page: 0
+      page: 0,
+      distance: 0
     };
     this.handleContextMenu = this.handleContextMenu.bind(this);
   }
   handleChangePage (index) {
     let page = this.state.page;
     if (page !== index) {
-      this.setState({
-        page: index
-      });
+      let distance = this.state.distance;
+      let target = index * (-1300);
+      let s = Math.abs(target - distance); // < 0 往右滑  --  > 0 往左滑
+      let d = 25;
+      let v = Math.floor(s / d);
+      if (target < distance) {
+        v = -v;
+      }
+      let timer = setInterval(() => {
+        distance += v;
+        this.setState({
+          distance: distance
+        });
+        if(target === distance) {
+          clearInterval(timer);
+          this.setState({
+            page: index
+          })
+        }
+      }, 10)
     }
   }
   handleContextMenu (event) {
@@ -33,6 +51,7 @@ class Site extends Component {
   render () {
     let {sites, setting, showSitesSetting} = this.props;
     let page = this.state.page;
+    let distance = this.state.distance;
     // 分页处理
     let tmpSites = [];
     if (setting.row && setting.column) {
@@ -60,7 +79,7 @@ class Site extends Component {
     return (
       <div className="main-box">
         <div className="home-main">
-          <div className="home-main-box" style={{transform: 'translateX(-'+1300*page+'px)'}}>
+          <div className="home-main-box" style={{transform: 'translateX('+ distance +'px)'}}>
             <div className="home-icon-box home-icon-last"/>
             {
               tmpSites.map((arr, i) => (
@@ -91,7 +110,7 @@ class Site extends Component {
           </div>
         </div>
         <div className="home-point-box">
-          <ul className="home-point-inner">
+          <ul className="home-point-inner" style={{display: tmpSites.length <= 1 ? 'none' : 'flex'}}>
             {
               tmpSites.map((item, index) => (<li onClick={this.handleChangePage.bind(this, index)} key={index} className={page === index ? 'home-point active' : 'home-point'}/>))
             }

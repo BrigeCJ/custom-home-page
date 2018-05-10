@@ -9,7 +9,7 @@ import windmill from './assets/imgs/windmill.png'
 
 import { connect } from 'react-redux'
 import { toggleMainSlideBox, toggleSearchSlideBox, toggleSuggestions, toggleSetting, setAllSearchEngines, setCurrentSearchEngine, setCurrentBg, setCurrentSites, setCurrentSetting } from "./store/actions"
-import { CustomSetting } from './assets/utils/utils'
+import { CustomSetting, showMessage } from './assets/utils/utils'
 
 class App extends Component {
   constructor(props) {
@@ -24,7 +24,9 @@ class App extends Component {
     this.setState({
       windmillClassName: 'rotate'
     });
+    showMessage('正在搜寻随机壁纸...', 0);
     axios.get('/api/wallpapers/get/random').then((res) => {
+      showMessage('随机壁纸切换成功', 3000);
       setTimeout(() => {
         let data = res.data;
         if (data.status === 200 && data.message === 'ok') {
@@ -41,12 +43,11 @@ class App extends Component {
         });
       }, 900)
     }).catch((err) => {
-      setTimeout(() => {
-        this.setState({
-          windmillClassName: ''
-        });
-        console.error(err);
-      }, 900)
+      this.setState({
+        windmillClassName: ''
+      });
+      showMessage('切换随机壁纸失败！', 3000);
+      console.error(err);
     })
   }
   initSetting () {

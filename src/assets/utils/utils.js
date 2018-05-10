@@ -79,16 +79,18 @@ export const showMessage = (message, duration) => {
   MessageText.innerText = message;
   MessageBox.appendChild(MessageText);
   document.body.appendChild(MessageBox);
-  let timer = setTimeout(() => {
-    if (MessageBox) {
-      try {
-        document.body.removeChild(MessageBox);
-      } catch (err) {
-        // pass
+  if (duration !== 0) {
+    let timer = setTimeout(() => {
+      if (MessageBox) {
+        try {
+          document.body.removeChild(MessageBox);
+        } catch (err) {
+          // pass
+        }
       }
-    }
-    clearTimeout(timer);
-  }, duration)
+      clearTimeout(timer);
+    }, duration)
+  }
 };
 
 export const CustomSetting = {

@@ -196,3 +196,137 @@
     transform: scale(1.25);
     background-color: rgba(255,255,255,.8);
 }
+
+/* 布局样式 x - column && y - row */
+.home-x-3 .home-icon-img {
+    width: 120px;
+    height: 120px
+}
+
+.home-x-3.home-y-2 .home-icon-img {
+    width: 115px;
+    height: 115px
+}
+
+.home-x-3.home-y-3 .home-icon-img {
+    width: 110px;
+    height: 110px
+}
+
+.home-x-3.home-y-4 .home-icon-img {
+    width: 110px;
+    height: 110px
+}
+
+.home-x-4 .home-icon-img {
+    width: 115px;
+    height: 115px
+}
+
+.home-x-4.home-y-3 .home-icon-img {
+    width: 110px;
+    height: 110px
+}
+
+.home-x-4.home-y-4 .home-icon-img {
+    width: 110px;
+    height: 110px
+}
+
+.home-x-5 .home-icon-img {
+    width: 110px;
+    height: 110px
+}
+
+.home-x-5.home-y-3 .home-icon-img {
+    width: 105px;
+    height: 105px
+}
+
+.home-x-5.home-y-4 .home-icon-img {
+    width: 105px;
+    height: 105px
+}
+
+.home-x-6 .home-icon-img {
+    width: 105px;
+    height: 105px
+}
+
+.home-x-7 .home-icon-img {
+    width: 100px;
+    height: 100px
+}
+
+/* second part */
+.home-x-3 .home-icon {
+    width: calc(100% / 3);
+    margin-top: 0;
+    margin-bottom: 45px
+}
+
+.home-x-4 .home-icon {
+    width: calc(100% / 4);
+    height: 150px;
+    margin-top: 5px;
+    margin-bottom: 40px
+}
+
+.home-x-5 .home-icon {
+    width: calc(100% / 5);
+    height: 150px;
+    margin-bottom: 45px
+}
+
+.home-x-6 .home-icon {
+    width: calc(100% / 6);
+    height: 150px;
+    margin-bottom: 45px
+}
+
+.home-x-7 .home-icon {
+    width: calc(100% / 7);
+    height: 150px;
+    margin-bottom: 45px
+}
+
+.home-y-3 .home-icon {
+    height: 150px;
+    margin-top: 13px;
+    margin-bottom: 20px
+}
+
+.home-y-4 .home-icon {
+    height: 150px;
+    margin-top: 20px;
+    margin-bottom: 20px
+}
+
+/* third */
+.home-y-1 .home-icon-box {
+    height: 250px;
+    padding-top: 80px
+}
+
+.home-y-2 .home-icon-box {
+    height: 440px;
+    padding-top: 60px
+}
+
+.home-y-2.home-x-3 .home-icon-box {
+    height: 460px
+}
+
+.home-y-2.home-x-4 .home-icon-box {
+    height: 450px
+}
+
+.home-y-3 .home-icon-box {
+    height: 590px;
+    padding-top: 40px
+}
+
+.home-y-4 .home-icon-box {
+    height: 774px;
+    padding-top: 40px
+}

@@ -62,8 +62,10 @@ class Home extends Component {
     let { setting } = this.props;
     let isShowSearchBox = setting.isShowSearchBox;
     let searchBoxSize = setting.searchBoxSize;
+    let column = setting.column;
+    let row = setting.row;
     return (
-      <div className="home-box" style={{zoom: zoom}} ref="homeBox">
+      <div className={['home-box', ` home-x-${column}`, ` home-y-${row}`].join('')} style={{zoom: zoom}} ref="homeBox">
         <div className="home-search" style={{display: isShowSearchBox ? 'flex': 'none', zoom: (searchBoxSize / 100).toFixed(2)}}>
           <Search />
         </div>

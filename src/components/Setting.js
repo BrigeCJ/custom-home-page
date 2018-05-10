@@ -12,6 +12,11 @@ import {
 } from "../store/actions";
 import {CustomSetting} from "../assets/utils/utils";
 
+import layout24 from '../assets/imgs/2_4.png';
+import layout25 from '../assets/imgs/2_5.png';
+import layout26 from '../assets/imgs/2_6.png';
+import layout27 from '../assets/imgs/2_7.png';
+
 class Setting extends Component {
   constructor (props) {
     super(props);
@@ -26,6 +31,26 @@ class Setting extends Component {
         'rgb(33, 150, 243)',
         'rgb(103, 58, 183)',
         'rgb(51, 51, 51)',
+      ],
+      layouts: [
+        [{
+          row: 2,
+          col: 4,
+          img: layout24
+        },{
+          row: 2,
+          col: 5,
+          img: layout25
+        }],
+        [{
+          row: 2,
+          col: 6,
+          img: layout26
+        },{
+          row: 2,
+          col: 7,
+          img: layout27
+        }]
       ]
     };
   }
@@ -44,6 +69,17 @@ class Setting extends Component {
     let value = event.target.value;
     this.props.updateCurrentSetting(key, value);
   }
+  handleLayooutChange (item, event) {
+    event.stopPropagation();
+    let setting = this.props.setting;
+    let row = setting.row;
+    let col = setting.column;
+    if (row === item.row && col === item.col) {
+      return;
+    }
+    this.props.updateCurrentSetting('row', item.row);
+    this.props.updateCurrentSetting('column', item.col);
+  }
   handleReset () {
     CustomSetting.setDefaultSearchEngine();
     CustomSetting.setAllEngines([]);
@@ -61,6 +97,7 @@ class Setting extends Component {
   render () {
     let { setting, updateCurrentSetting } = this.props;
     let colors = this.state.colors;
+    let layouts = this.state.layouts;
     return (
       <div className="setting-box">
         <div className="setting-item-wrapper">
@@ -112,6 +149,29 @@ class Setting extends Component {
               </div>
               <input type="checkbox" className="checkbox-toggle" checked={setting.isShowRandomWallpaperBtn} onChange={this.handleCheckboxChange.bind(this, 'isShowRandomWallpaperBtn')}/>
             </div>
+          </div>
+        </div>
+        <div className="setting-item-wrapper">
+          <div className="setting-item-title">布局</div>
+          <div className="setting-item">
+            {
+              layouts.map((line, i) => {
+                return (
+                  <div className="setting-setlayout-line-box" key={i}>
+                    {
+                      line.map((item, index) => (
+                        <div className={['setting-setlayout-item-box', setting.row === item.row && setting.column === item.col ? ' active' : ''].join('')}
+                             key={index}
+                            onClick={this.handleLayooutChange.bind(this, item)}>
+                          <div className="setting-setlayout-item" style={{backgroundImage: 'url('+ item.img+')'}}/>
+                          <p className="setting-setlayout-item-number">{item.row} * {item.col}</p>
+                        </div>
+                      ))
+                    }
+                  </div>
+                )
+              })
+            }
           </div>
         </div>
         <div className="setting-item-wrapper">
