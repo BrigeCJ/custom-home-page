@@ -85,7 +85,7 @@ class App extends Component {
     return (
       <div className="app">
         <div className="app-bg" style={{backgroundImage: 'url(' + currentBg.src + ')'}}/>
-        <div className="app-bg-cover" style={{backgroundColor: 'rgba(0, 0, 0, 0.38'}}/>
+        <div className="app-bg-cover" style={{backgroundColor: 'rgba(0, 0, 0, '+(setting.bgOpacity / 100).toFixed(2)+')'}}/>
         <div className="app-home">
           <div className="app-home-container" style={{zoom: (setting.mainZoom / 100).toFixed(2)}}>
             <Home />

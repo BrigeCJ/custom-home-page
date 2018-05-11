@@ -149,7 +149,7 @@
 /* rang 美化*/
 input[type=range] {
     -webkit-appearance: none;
-    width: 160px;
+    width: 100%;
     border-radius: 10px; /*这个属性设置使填充进度条时的图形为圆角*/
 }
 
@@ -186,6 +186,14 @@ input[type=range]::-webkit-slider-thumb {
     height: 18px;
 }
 
+.setting-range-progress-wallpapers {
+    width: 330px;
+    position: relative;
+    display: block;
+    margin: 20px 20px 0 0;
+    height: 18px;
+}
+
 .setting-range {
     position: absolute;
     z-index: 104;
@@ -210,7 +218,7 @@ input[type=range]::-webkit-slider-thumb {
     color: cornflowerblue;
 }
 
-.setting-range-progress .setting-progress {
+.setting-progress {
     position: absolute;
     z-index: 103;
     top: 50%;

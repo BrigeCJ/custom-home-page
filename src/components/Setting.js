@@ -301,6 +301,15 @@ class Setting extends Component {
           </div>
         </div>
         <div className="setting-item-wrapper">
+          <div className="setting-item-title">壁纸遮罩浓度</div>
+          <div className="setting-item">
+            <div className="setting-range-progress-wallpapers">
+              <input type="range" className="setting-range" min="0" max="100" value={setting.bgOpacity} data-progress={setting.bgOpacity + '%'} onChange={this.handleRangeChange.bind(this, 'bgOpacity')}/>
+              <progress className="setting-progress" max="100" value={setting.bgOpacity || 0}/>
+            </div>
+          </div>
+        </div>
+        <div className="setting-item-wrapper">
           <div>
             <div className="setting-item-title">还原默认设置</div>
           </div>

@@ -31,11 +31,9 @@ class MainSlideBox extends Component {
           <ul className="slide-title-box">
             <li className={ showIndex === 0 ? 'slide-menu selected' : 'slide-menu'} onClick={this.changeContent.bind(this, 0)}>添加</li>
             <div className="slide-separate"/>
-            <li className={ showIndex === 1 ? 'slide-menu selected' : 'slide-menu'} onClick={this.changeContent.bind(this, 1)}>我的</li>
+            <li className={ showIndex === 1 ? 'slide-menu selected' : 'slide-menu'} onClick={this.changeContent.bind(this, 1)}>发现</li>
             <div className="slide-separate"/>
-            <li className={ showIndex === 2 ? 'slide-menu selected' : 'slide-menu'} onClick={this.changeContent.bind(this, 2)}>发现</li>
-            <div className="slide-separate"/>
-            <li className={ showIndex === 3 ? 'slide-menu selected' : 'slide-menu'} onClick={this.changeContent.bind(this, 3)}>设置</li>
+            <li className={ showIndex === 2 ? 'slide-menu selected' : 'slide-menu'} onClick={this.changeContent.bind(this, 2)}>设置</li>
           </ul>
         </div>
         {/* -- 添加 -- */}
@@ -43,11 +41,11 @@ class MainSlideBox extends Component {
           <AddSite />
         </div>
         {/* -- 发现 -- */}
-        <div className="main-slide-box-content" style={{display: showIndex === 2 ? 'block' : 'none'}}>
+        <div className="main-slide-box-content" style={{display: showIndex === 1 ? 'block' : 'none'}}>
           <Discover />
         </div>
         {/* -- 设置 -- */}
-        <div className="main-slide-box-content setting" style={{display: showIndex === 3 ? 'block' : 'none'}}>
+        <div className="main-slide-box-content setting" style={{display: showIndex === 2 ? 'block' : 'none'}}>
           <Setting />
         </div>
       </div>
