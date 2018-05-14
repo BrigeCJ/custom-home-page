@@ -22,7 +22,9 @@
             <a href="https://github.com/checkson/custom-home-page" target="_blank">
               <el-dropdown-item>项目仓库</el-dropdown-item>
             </a>
-            <el-dropdown-item divided>退出登录</el-dropdown-item>
+            <router-link to="/login">
+              <el-dropdown-item divided>退出登录</el-dropdown-item>
+            </router-link>
           </el-dropdown-menu>
         </el-dropdown>
       </div>

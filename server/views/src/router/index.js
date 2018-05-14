@@ -1,9 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/components/Home'
-// import Site from '@/components/Modules/Site'
-// import SearchEngine from '@/components/Modules/SearchEngine'
-// import Wallpaper from '@/components/Modules/Wallpaper'
 
 Vue.use(Router)
 
@@ -11,12 +7,17 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/site'
+      redirect: '/Site'
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: resolve => require(['../components/Login.vue'], resolve)
     },
     {
       path: '/',
       name: 'Home',
-      component: Home,
+      component: resolve => require(['../components/Home.vue'], resolve),
       children: [
         {
           path: '/site',
