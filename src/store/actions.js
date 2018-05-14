@@ -3,6 +3,8 @@ import {
   TOGGLE_SEARCH_SLIDE_BOX,
   TOGGLE_SUGGESTIONS,
   TOGGLE_SETTING,
+  CHANGE_CURRENT_PAGE,
+  CHANGE_CURRENT_DISTANCE,
   SET_ALL_SEARCH_ENGINES,
   ADD_SEARCH_ENGINE,
   DELETE_SEARCH_ENGINE,
@@ -35,6 +37,39 @@ export const toggleSetting = (flag) => ({
   type: TOGGLE_SETTING,
   flag: flag
 });
+
+export const changeCurrentPage = (page) => ({
+  type: CHANGE_CURRENT_PAGE,
+  page: page
+});
+
+export const changeCurrentDistance = (distance) => ({
+  type: CHANGE_CURRENT_DISTANCE,
+  distance: distance
+});
+
+export const changeCuurentPageAsync = (index) => (dispatch, getState) => {
+  let state = getState();
+  let page = state.view.page;
+  if (page !== index) {
+    let distance = state.view.distance;
+    let target = index * (-1300);
+    let s = Math.abs(target - distance); // < 0 往右滑  --  > 0 往左滑
+    let d = 25;
+    let v = Math.floor(s / d);
+    if (target < distance) {
+      v = -v;
+    }
+    let timer = setInterval(() => {
+      distance += v;
+      dispatch(changeCurrentDistance(distance));
+      if(target === distance) {
+        clearInterval(timer);
+        dispatch(changeCurrentPage(index));
+      }
+    }, 10)
+  }
+};
 
 // 当前拥有的搜索引擎
 export const setAllSearchEngines = (searchEngines) => ({
@@ -75,10 +110,67 @@ export const addSite = (site) => ({
   site: site
 });
 
+export const addSiteAsync = (site) => (dispatch, getState) => {
+  let state = getState();
+  let { row, column } = state.setting;
+  let total = state.sites.length;
+  let { page, distance } = state.view;
+  let pageSize = row * column;
+  let count = Math.floor(total / pageSize);
+  if (page !== count) {
+    let target = count * (-1300);
+    let s = Math.abs(target - distance); // < 0 往右滑  --  > 0 往左滑
+    let d = 25;
+    let v = Math.floor(s / d);
+    if (target < distance) {
+      v = -v;
+    }
+    let timer = setInterval(() => {
+      distance += v;
+      dispatch(changeCurrentDistance(distance));
+      if(target === distance) {
+        clearInterval(timer);
+        dispatch(changeCurrentPage(count));
+        dispatch(addSite(site))
+      }
+    }, 10)
+  } else {
+    dispatch(addSite(site))
+  }
+};
+
 export const deleteSite = (siteId) => ({
   type: DELETE_SITE,
   id: siteId
 });
+
+export const deleteSiteAsync = (siteId) => (dispatch, getState) => {
+  let state = getState();
+  let { row, column } = state.setting;
+  let total = state.sites.length;
+  let { page, distance } = state.view;
+  let pageSize = row * column;
+  let count = Math.floor(total / pageSize);
+  let r = total % pageSize;
+  dispatch(deleteSite(siteId))
+  if (r === 1 && page === count && count !== 0) {
+    let target = (count - 1) * (-1300);
+    let s = Math.abs(target - distance); // < 0 往右滑  --  > 0 往左滑
+    let d = 25;
+    let v = Math.floor(s / d);
+    if (target < distance) {
+      v = -v;
+    }
+    let timer = setInterval(() => {
+      distance += v;
+      dispatch(changeCurrentDistance(distance));
+      if(target === distance) {
+        clearInterval(timer);
+        dispatch(changeCurrentPage(count - 1));
+      }
+    }, 10)
+  }
+};
 
 // 当前网站的设置
 export const setCurrentSetting = (setting) => ({

@@ -1,7 +1,7 @@
 import {
   SET_CURRENT_SITES,
   ADD_SITE,
-  DELETE_SITE
+  DELETE_SITE,
 } from '../actionTyps'
 
 import { CustomSetting } from "../../assets/utils/utils";

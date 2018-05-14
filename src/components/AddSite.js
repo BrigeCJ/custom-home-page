@@ -3,7 +3,7 @@ import '../assets/styles/addSite.css'
 
 import axios from 'axios'
 import { connect } from 'react-redux'
-import { addSite } from "../store/actions";
+import { addSiteAsync } from "../store/actions";
 import { throttle } from "../assets/utils/utils";
 
 class AddSite extends Component {
@@ -259,7 +259,7 @@ const mapStatetoProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     addSite: (site) => {
-      dispatch(addSite(site))
+      dispatch(addSiteAsync(site))
     }
   }
 };

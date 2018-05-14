@@ -2,41 +2,12 @@ import React, { Component } from 'react'
 import '../assets/styles/site.css'
 
 import { connect } from 'react-redux';
-import { toggleSetting, deleteSite } from '../store/actions'
+import { toggleSetting, deleteSiteAsync, changeCuurentPageAsync } from '../store/actions'
 
 class Site extends Component {
   constructor (props) {
     super(props);
-    this.state = {
-      page: 0,
-      distance: 0
-    };
     this.handleContextMenu = this.handleContextMenu.bind(this);
-  }
-  handleChangePage (index) {
-    let page = this.state.page;
-    if (page !== index) {
-      let distance = this.state.distance;
-      let target = index * (-1300);
-      let s = Math.abs(target - distance); // < 0 往右滑  --  > 0 往左滑
-      let d = 25;
-      let v = Math.floor(s / d);
-      if (target < distance) {
-        v = -v;
-      }
-      let timer = setInterval(() => {
-        distance += v;
-        this.setState({
-          distance: distance
-        });
-        if(target === distance) {
-          clearInterval(timer);
-          this.setState({
-            page: index
-          })
-        }
-      }, 10)
-    }
   }
   handleContextMenu (event) {
     event.preventDefault();
@@ -45,13 +16,12 @@ class Site extends Component {
   }
   handleDelete (e, id) {
     e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
     e.preventDefault();
     this.props.deleteSite(id);
   }
   render () {
-    let {sites, setting, showSitesSetting} = this.props;
-    let page = this.state.page;
-    let distance = this.state.distance;
+    let { sites, setting, showSitesSetting, page, distance, handleChangePage } = this.props;
     // 分页处理
     let tmpSites = [];
     if (setting.row && setting.column) {
@@ -112,7 +82,13 @@ class Site extends Component {
         <div className="home-point-box">
           <ul className="home-point-inner" style={{display: tmpSites.length <= 1 ? 'none' : 'flex'}}>
             {
-              tmpSites.map((item, index) => (<li onClick={this.handleChangePage.bind(this, index)} key={index} className={page === index ? 'home-point active' : 'home-point'}/>))
+              tmpSites.map((item, index) => (<li onClick={
+                (e) =>{
+                  e.stopPropagation();
+                  e.nativeEvent.stopImmediatePropagation();
+                  handleChangePage(index)
+                }
+              } key={index} className={page === index ? 'home-point active' : 'home-point'}/>))
             }
           </ul>
         </div>
@@ -125,7 +101,9 @@ const mapStateToProps = (state) => {
   return {
     sites: state.sites,
     setting: state.setting,
-    showSitesSetting: state.view.showSitesSetting
+    showSitesSetting: state.view.showSitesSetting,
+    page: state.view.page,
+    distance: state.view.distance
   }
 };
 
@@ -135,7 +113,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(toggleSetting(flag))
     },
     deleteSite: (id) => {
-      dispatch(deleteSite((id)))
+      dispatch(deleteSiteAsync((id)))
+    },
+    handleChangePage: (index) => {
+      dispatch(changeCuurentPageAsync(index))
     }
   }
 };
