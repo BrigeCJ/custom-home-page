@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import '../assets/styles/site.css'
 
 import { connect } from 'react-redux';
-import { toggleSetting, deleteSiteAsync, changeCuurentPageAsync } from '../store/actions'
+import { toggleSetting, togglePopupMenu, deleteSiteAsync, changeCuurentPageAsync } from '../store/actions'
 
 class Site extends Component {
   constructor (props) {
@@ -11,8 +11,10 @@ class Site extends Component {
   }
   handleContextMenu (event) {
     event.preventDefault();
+    event.nativeEvent.stopImmediatePropagation();
     event.stopPropagation();
-    this.props.toggleSetting(true)
+    this.props.toggleSetting(true);
+    this.props.togglePopupMenu(false);
   }
   handleDelete (e, id) {
     e.stopPropagation();
@@ -111,6 +113,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     toggleSetting: (flag) => {
       dispatch(toggleSetting(flag))
+    },
+    togglePopupMenu: (flag) => {
+      dispatch(togglePopupMenu(flag))
     },
     deleteSite: (id) => {
       dispatch(deleteSiteAsync((id)))

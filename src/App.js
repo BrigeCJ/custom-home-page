@@ -8,7 +8,7 @@ import axios from 'axios';
 import windmill from './assets/imgs/windmill.png'
 
 import { connect } from 'react-redux'
-import { toggleMainSlideBox, toggleSearchSlideBox, toggleSuggestions, toggleSetting, setAllSearchEngines, setCurrentSearchEngine, setCurrentBg, setCurrentSites, setCurrentSetting } from "./store/actions"
+import { toggleMainSlideBox, toggleSearchSlideBox, toggleSuggestions, toggleSetting, togglePopupMenu, setAllSearchEngines, setCurrentSearchEngine, setCurrentBg, setCurrentSites, setCurrentSetting } from "./store/actions"
 import { CustomSetting, showMessage } from './assets/utils/utils'
 
 class App extends Component {
@@ -16,6 +16,10 @@ class App extends Component {
     super(props);
     this.state = {
       windmillClassName: '',
+      contextMenu: {
+        top: 0,
+        left: 0
+      }
     };
     this.changeWrapper = this.changeWrapper.bind(this);
     this.initSetting = this.initSetting.bind(this);
@@ -69,18 +73,63 @@ class App extends Component {
     this.props.setCurrentBg(CustomSetting.getBg());
     this.props.setCurrentSites(CustomSetting.getSites());
     this.props.setCurrentSetting(CustomSetting.getSetting());
-    // 绑定document事件
+  }
+  initEventBundle () {
     document.addEventListener('click', () => {
       this.props.toggleSuggestions(false);
       this.props.toggleSetting(false);
+      this.props.togglePopupMenu(false);
+    });
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      // 判断元素是否显示
+      let isShow = this.props.showPopupMenu;
+      if (isShow) {
+        this.props.togglePopupMenu(false);
+        return false;
+      }
+      // 获取隐藏元素的宽高
+      let contextMenu = this.refs.contextMenu;
+      let cloneDOM = contextMenu.cloneNode(true);
+      cloneDOM.style.display = 'block';
+      cloneDOM.style.top = '-1000px';
+      contextMenu.parentNode.appendChild(cloneDOM);
+      let ow = cloneDOM.offsetWidth;
+      let oh = cloneDOM.offsetHeight;
+      contextMenu.parentNode.removeChild(cloneDOM);
+      // 获取文档宽高信息
+      let dw = document.body.clientWidth || document.documentElement.clientWidth;
+      let dh = document.body.clientHeight || document.documentElement.clientHeight;
+      let ww = window.screen.availWidth;
+      let wh = window.screen.availHeight;
+      let w = dw < ww ? dw : ww;
+      let h = dh < wh ? dh : wh;
+      // 获取鼠标点击位置信息
+      let x = e.clientX;
+      let y = e.clientY;
+      // 计算出现的位置
+      let l = (w - x) > ow ? x : x - ow;
+      let t = (h - y) > oh ? y : y - oh;
+      this.setState({
+        contextMenu: {
+          top: t,
+          left: l
+        }
+      });
+      this.props.togglePopupMenu(true)
     })
   }
-  componentDidMount () {
+  init () {
     this.initSetting();
+    this.initEventBundle();
+  }
+  componentDidMount () {
+    this.init();
   }
   render () {
-    let { showAppCover, showSearcherCover, currentBg, setting, toggleMainSlideBox, toggleSearchSlideBox } = this.props;
+    let { showAppCover, showPopupMenu, showSearcherCover, currentBg, setting, toggleMainSlideBox, toggleSearchSlideBox, toggleSetting, togglePopupMenu } = this.props;
     let windmillClassName = this.state.windmillClassName;
+    let contextMenu = this.state.contextMenu;
     let rightSlideZoom = setting.rightSlideZoom || 100;
     return (
       <div className="app">
@@ -106,6 +155,22 @@ class App extends Component {
             <SearchSlideBox />
           </div>
         </div>
+        <div className="contextMenu" ref="contextMenu" style={{display: showPopupMenu? 'block' : 'none', top: contextMenu.top + 'px', left: contextMenu.left + 'px'}}>
+          <ul>
+            <li onClick={
+              this.changeWrapper
+            }>随机壁纸</li>
+            <li onClick={
+              (e) => {
+                e.stopPropagation();
+                e.nativeEvent.stopImmediatePropagation();
+                toggleSetting(true);
+                togglePopupMenu(false)
+              }
+            }>编辑图标</li>
+            <li><a href={currentBg.src} download>下载壁纸</a></li>
+          </ul>
+        </div>
       </div>
     )
   }
@@ -115,6 +180,7 @@ const mapStateToProps = (state) => {
   return {
     showAppCover: state.view.showMainSlideBox,
     showSearcherCover: state.view.showSearchSlideBox,
+    showPopupMenu: state.view.showPopupMenu,
     currentBg: state.currentBg,
     setting: state.setting
   }
@@ -133,6 +199,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     toggleSetting: (flag) => {
       dispatch(toggleSetting(flag))
+    },
+    togglePopupMenu: (flag) => {
+      dispatch(togglePopupMenu(flag))
     },
     setAllSearchEngines: (searchEngines) => {
       dispatch(setAllSearchEngines(searchEngines))

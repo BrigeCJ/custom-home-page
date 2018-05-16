@@ -3,6 +3,7 @@ import {
   TOGGLE_SEARCH_SLIDE_BOX,
   TOGGLE_SUGGESTIONS,
   TOGGLE_SETTING,
+  TOGGLE_POPUP_MENU,
   CHANGE_CURRENT_PAGE,
   CHANGE_CURRENT_DISTANCE,
   SET_ALL_SEARCH_ENGINES,
@@ -35,6 +36,11 @@ export const toggleSuggestions = (flag) => ({
 
 export const toggleSetting = (flag) => ({
   type: TOGGLE_SETTING,
+  flag: flag
+});
+
+export const togglePopupMenu = (flag) => ({
+  type: TOGGLE_POPUP_MENU,
   flag: flag
 });
 

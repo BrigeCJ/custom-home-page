@@ -1,6 +1,7 @@
 <template>
   <header class="header">
     <div class="logo">
+      <img src="../../assets/imgs/logo.png" alt="checkson" width="30" style="vertical-align: middle">
       <span>Checkson</span>
     </div>
     <div class="header-right">
