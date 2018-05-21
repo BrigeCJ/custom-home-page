@@ -128,7 +128,9 @@
     word-break: break-all;
     color: #8f8f8f;
     -webkit-line-clamp: 2;
+    /* autoprefixer: off */
     -webkit-box-orient: vertical;
+    /* autoprefixer: on */
 }
 
 .search-item-slide.added .search-item-desc {
@@ -201,4 +203,11 @@
 
 .search-create-custom-btn:hover {
     -webkit-filter: brightness(1.05);
+}
+
+.search-engine-loading-box {
+    display: flex;
+    width: 100%;
+    margin-top: 20px;
+    justify-content: center;
 }

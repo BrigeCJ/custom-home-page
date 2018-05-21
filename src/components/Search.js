@@ -6,7 +6,7 @@ import searchArrowDown from '../assets/imgs/search-arrow-down.png'
 import add from '../assets/imgs/add.png'
 
 import { connect } from 'react-redux'
-import { toggleSearchSlideBox, toggleSuggestions, setCurrentSearchEngine, deleteSearchEngine } from "../store/actions"
+import { toggleSearchSlideBox, toggleSuggestions, setCurrentSearchEngine, deleteSearchEngine, changeInitialSearchSlideBoxFlag } from "../store/actions"
 import { CustomSetting, showMessage } from '../assets/utils/utils'
 
 class Search extends Component {
@@ -15,12 +15,14 @@ class Search extends Component {
     this.state = {
       showIndex: 0,
       showSearchEngine: false,
-      suggestions: []
+      suggestions: [],
+      keyword: '',
+      selectedIndex: -1
     };
     this.changeSearchType = this.changeSearchType.bind(this);
     this.showSearchSelect = this.showSearchSelect.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleEnter = this.handleEnter.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
   }
@@ -38,6 +40,13 @@ class Search extends Component {
   }
   handleChange (event) {
     let val = event.target.value;
+    let obj = {
+      keyword: val,
+    };
+    if (!val) {
+      obj.selectedIndex = -1;
+    }
+    this.setState(obj);
     let timestamp = new Date().getTime();
     let url = `http://suggestion.baidu.com/su?wd=${val}&p=3&t=${timestamp}&cb=window.baidu.sug`;
     // 定义回调函数
@@ -59,10 +68,35 @@ class Search extends Component {
     script.id = 'jsonpScript';
     document.getElementsByTagName("head")[0].appendChild(script);
   }
-  handleEnter (event) {
+  handleKeyDown(event) {
     event.stopPropagation();
-    if (event.keyCode === 13) {
+    let keyCode = event.keyCode;
+    if (keyCode === 13) {
       this.handleSearch(event.target.value)
+    } else if ( keyCode === 38 || keyCode === 40) { // 向上 或者 向下
+      let suggestions = this.state.suggestions;
+      let len = suggestions.length;
+      if (len !== 0) {
+         let selectedIndex = this.state.selectedIndex;
+         if (keyCode === 38) {
+           if (selectedIndex === - 1) {
+             selectedIndex = len - 1;
+           } else {
+             selectedIndex--;
+           }
+         } else {
+           if (selectedIndex === len - 1) {
+             selectedIndex = -1;
+           } else {
+             selectedIndex++;
+           }
+         }
+         let keyword = this.state.keyword;
+         event.target.value = selectedIndex === -1 ? keyword : suggestions[selectedIndex];
+         this.setState({
+           selectedIndex: selectedIndex
+         })
+      }
     }
   }
   handleClick (event) {
@@ -93,8 +127,9 @@ class Search extends Component {
     let showIndex = this.state.showIndex;
     let showSearchEngine = this.state.showSearchEngine;
     let suggestions = this.state.suggestions;
+    let selectedIndex = this.state.selectedIndex;
 
-    let { currentEngine, allEngines, setting, showSuggestions, toggleSearchSlideBox, toggleSuggestions, setCurrentSearchEngine } = this.props;
+    let { currentEngine, allEngines, setting, showSuggestions, toggleSearchSlideBox, toggleSuggestions, setCurrentSearchEngine, firstVisitedSearchSlideBox, changeInitialSearchSlideBoxFlag } = this.props;
 
     let isShowSearchType = setting.isShowSearchType;
     let isShowSearchBtn = setting.isShowSearchBtn;
@@ -115,7 +150,7 @@ class Search extends Component {
                  autoFocus
                  ref="input"
                  type="search" placeholder="输入并搜索..."
-                 onKeyDown={this.handleEnter}
+                 onKeyDown={this.handleKeyDown}
                  onChange={this.handleChange}
                  style={{paddingRight: isShowSearchBtn ? '94px' : '20px', borderRadius: searchBoxRadius + 'px', background: 'rgb(255, 255, 255)'}}/>
           <button className="search-button"
@@ -143,7 +178,15 @@ class Search extends Component {
                 <div className="search-item-name">{item.title}</div>
               </div>))
             }
-            <div className="search-item search-item-addBtn" onClick={() => toggleSearchSlideBox(true)}>
+            <div className="search-item search-item-addBtn"
+                 onClick={() => {
+                   if (firstVisitedSearchSlideBox) {
+                     changeInitialSearchSlideBoxFlag(false);
+                   }
+                   toggleSearchSlideBox(true)
+                 }
+               }
+            >
               <div className="search-add-out">
                 <img className="search-item-img search-item-add" src={add} alt="默认搜索图标"/>
               </div>
@@ -153,7 +196,7 @@ class Search extends Component {
           <div className="search-suggestion-out" style={{display: showSuggestions ? 'block' : 'none'}}>
             <ul className="search-suggestion-list">
               {
-                suggestions.map((item, index) => (<li className="search-suggestion-item" key={index} onClick={() => {toggleSuggestions(false); this.handleSearch(item);}}>{item}</li>))
+                suggestions.map((item, index) => (<li className={['search-suggestion-item', selectedIndex === index ? ' active' : ''].join('')} key={index} onClick={() => {toggleSuggestions(false); this.handleSearch(item);}}>{item}</li>))
               }
             </ul>
           </div>
@@ -168,7 +211,8 @@ const mapStateToProps = (state) => {
     currentEngine: state.currentSearchEngine,
     allEngines: state.allSearchEngines,
     showSuggestions: state.view.showSuggestions,
-    setting: state.setting
+    setting: state.setting,
+    firstVisitedSearchSlideBox: state.firstVisitedSearchSlideBox
   }
 };
 
@@ -185,6 +229,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     deleteSearchEngine: (searchEngineId) => {
       dispatch(deleteSearchEngine(searchEngineId))
+    },
+    changeInitialSearchSlideBoxFlag: (flag) => {
+      dispatch(changeInitialSearchSlideBoxFlag(flag))
     }
   }
 };

@@ -289,3 +289,7 @@
 .search-suggestion-item:hover {
     background-color: #eee;
 }
+
+.search-suggestion-item.active {
+    background-color: #eee;
+}

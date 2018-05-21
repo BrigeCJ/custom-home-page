@@ -5,6 +5,7 @@ import currentSearchEngine from './currentSearchEngine'
 import currentBg from './currentBg'
 import sites from './sites'
 import setting from './setting'
+import initialize from './initialize'
 
 export default combineReducers({
   view: view,
@@ -12,5 +13,6 @@ export default combineReducers({
   currentSearchEngine: currentSearchEngine,
   currentBg: currentBg,
   sites: sites,
-  setting: setting
+  setting: setting,
+  firstVisitedSearchSlideBox: initialize
 });

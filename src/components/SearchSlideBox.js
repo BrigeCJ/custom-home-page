@@ -15,8 +15,9 @@ class SearchSlideBox extends Component {
       }, {
         title: '其他搜索引擎'
       }],
-      defaultSearchEngines: []
-    }
+      defaultSearchEngines: [],
+      loading: true
+    };
     this.changeTabIndex = this.changeTabIndex.bind(this)
   }
   init () {
@@ -35,7 +36,8 @@ class SearchSlideBox extends Component {
     let message = data.message;
     if (status === 200 && message === 'ok') {
       this.setState({
-        defaultSearchEngines: data.data.row
+        defaultSearchEngines: data.data.row,
+        loading: false
       })
     } else {
       console.error(message)
@@ -50,7 +52,7 @@ class SearchSlideBox extends Component {
     this.init();
   }
   render () {
-    let { defaultSearchEngines, tabs, tabIndex } = this.state;
+    let { defaultSearchEngines, tabs, tabIndex, loading } = this.state;
     let { allEngines, toggleSearchSlideBox, addSearchEngine } = this.props;
     return (
       <div className="search-slide-box">
@@ -100,6 +102,13 @@ class SearchSlideBox extends Component {
                   </div>)
                 })
               }
+              <li className="search-engine-loading-box" style={{display: loading ? 'flex' : 'none'}}>
+                <div className="add-loading">
+                  <div className="bound bound1"/>
+                  <div className="bound bound2"/>
+                  <div className="bound bound3"/>
+                </div>
+              </li>
             </div>
           </div>
         </div>

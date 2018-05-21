@@ -19,7 +19,8 @@ class App extends Component {
       contextMenu: {
         top: 0,
         left: 0
-      }
+      },
+      firstVisitedMainSlideBox: true
     };
     this.changeWrapper = this.changeWrapper.bind(this);
     this.initSetting = this.initSetting.bind(this);
@@ -127,9 +128,10 @@ class App extends Component {
     this.init();
   }
   render () {
-    let { showAppCover, showPopupMenu, showSearcherCover, currentBg, setting, toggleMainSlideBox, toggleSearchSlideBox, toggleSetting, togglePopupMenu } = this.props;
+    let { showAppCover, showPopupMenu, showSearcherCover, currentBg, setting, toggleMainSlideBox, toggleSearchSlideBox, toggleSetting, togglePopupMenu, firstVisitedSearchSlideBox } = this.props;
     let windmillClassName = this.state.windmillClassName;
     let contextMenu = this.state.contextMenu;
+    let firstVisitedMainSlideBox = this.state.firstVisitedMainSlideBox;
     let rightSlideZoom = setting.rightSlideZoom || 100;
     return (
       <div className="app">
@@ -140,19 +142,33 @@ class App extends Component {
             <Home />
           </div>
         </div>
-        <div className="app-operation" onClick={() => toggleMainSlideBox(true)}/>
+        <div className="app-operation"
+             onClick={() => {
+               if (firstVisitedMainSlideBox) {
+                 this.setState({
+                   firstVisitedMainSlideBox: false
+                 });
+               }
+               toggleMainSlideBox(true)
+             }
+           }
+        />
         <div className="app-change-wrapper" style={{display: setting.isShowRandomWallpaperBtn ? 'block' : 'none', visibility: 'visible'}}>
           <img className={`windmill-img ${windmillClassName}`} src={windmill} alt="风车" onClick={this.changeWrapper}/>
           <div className="windmill-rect"/>
         </div>
         <div className="app-cover" style={{display: showAppCover ? 'block': 'none'}} onClick={() => toggleMainSlideBox(false)}/>
         <div id="mainSlidBox" className={showAppCover ? 'app-slideBox slide-show slide-box-shadow': 'app-slideBox'} style={{zoom: rightSlideZoom / 100.0}}>
-          <MainSlideBox />
+          {
+            !firstVisitedMainSlideBox ? <MainSlideBox/> : ''
+          }
         </div>
         <div id="searchAdd">
           <div className="search-add-background" style={{display: showSearcherCover ? 'block' : 'none'}} onClick={() => toggleSearchSlideBox(false)}/>
           <div className={showSearcherCover ? 'search-add app-slideBox slide-show slide-box-shadow': 'search-add app-slideBox'} style={{zoom: 1}}>
-            <SearchSlideBox />
+            {
+              !firstVisitedSearchSlideBox ? <SearchSlideBox/> : ''
+            }
           </div>
         </div>
         <div className="contextMenu" ref="contextMenu" style={{display: showPopupMenu? 'block' : 'none', top: contextMenu.top + 'px', left: contextMenu.left + 'px'}}>
@@ -182,7 +198,8 @@ const mapStateToProps = (state) => {
     showSearcherCover: state.view.showSearchSlideBox,
     showPopupMenu: state.view.showPopupMenu,
     currentBg: state.currentBg,
-    setting: state.setting
+    setting: state.setting,
+    firstVisitedSearchSlideBox: state.firstVisitedSearchSlideBox
   }
 };
 

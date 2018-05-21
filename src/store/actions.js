@@ -15,7 +15,8 @@ import {
   ADD_SITE,
   DELETE_SITE,
   SET_CURRENT_SETTING,
-  UPDATE_CURRENT_SETTING
+  UPDATE_CURRENT_SETTING,
+  IS_FIRST_VISITED_SEARCH_SLIDE_BOX
 } from './actionTyps'
 
 // 视图层
@@ -158,7 +159,7 @@ export const deleteSiteAsync = (siteId) => (dispatch, getState) => {
   let pageSize = row * column;
   let count = Math.floor(total / pageSize);
   let r = total % pageSize;
-  dispatch(deleteSite(siteId))
+  dispatch(deleteSite(siteId));
   if (r === 1 && page === count && count !== 0) {
     let target = (count - 1) * (-1300);
     let s = Math.abs(target - distance); // < 0 往右滑  --  > 0 往左滑
@@ -188,4 +189,10 @@ export const updateCurrentSetting = (key, value) => ({
   type: UPDATE_CURRENT_SETTING,
   key: key,
   value: value
+});
+
+// 是否第一次访问
+export const changeInitialSearchSlideBoxFlag = (flag) => ({
+  type: IS_FIRST_VISITED_SEARCH_SLIDE_BOX,
+  flag: flag
 });
